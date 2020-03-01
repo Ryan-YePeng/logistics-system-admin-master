@@ -1,0 +1,6 @@
+.el-scrollbar__wrap{
+  overflow-x: hidden!important;
+}
+.el-select-dropdown__list {
+  margin-bottom: 17px!important;
+}
