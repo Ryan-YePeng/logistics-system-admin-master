@@ -70,7 +70,6 @@ export function getRouter() {
     let menu;
     setTimeout(() => {
       let user = store.getters.user;
-      console.log(user)
       store.dispatch('setUser', user);
       role = user.authorities[0].authority;
       if (role === 'level0') {

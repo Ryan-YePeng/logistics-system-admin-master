@@ -32,10 +32,10 @@ service.interceptors.request.use( //请求拦截
 service.interceptors.response.use( //响应拦截
     response => { //成功
       const {message, status} = response.data;
-      if (!isEmpty(message) && status === 200) {
+      if (!isEmpty(message) && status === 200 && typeof (message) == 'string') {
         successMsg(message)
       }
-      if (!isEmpty(message) && status !== 200) {
+      if (!isEmpty(message) && status !== 200 && typeof (message) == 'string') {
         errorMsg(message)
       }
       return response
@@ -147,6 +147,29 @@ export const axiosds = (url, param) => {
 };
 /**
  * @param {String} url 请求地址
+ * @param {Array} param [1, 2, 3]
+ * @description delete，删除多条数据。
+ * */
+export const axiosD = (url, param) => {
+  return new Promise((resolve, reject) => {
+    service({
+      method: 'delete',
+      url: url,
+      params: {
+        ids: param
+      },
+      paramsSerializer: params => {
+        return qs.stringify(params, {indices: false})
+      }
+    }).then(result => {
+      resolve(result)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+};
+/**
+ * @param {String} url 请求地址
  * @param {Object} param {name: LiHua, age: 18}
  * @description post，键值对格式。
  * */
@@ -154,6 +177,30 @@ export const axiosK = (url, param) => {
   return new Promise((resolve, reject) => {
     service({
       method: 'post',
+      url: url,
+      data: param,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      transformRequest: [(data) => {
+        return qs.stringify(data)
+      }]
+    }).then(result => {
+      resolve(result)
+    }).catch(error => {
+      reject(error)
+    })
+  })
+};
+/**
+ * @param {String} url 请求地址
+ * @param {Object} param {name: LiHua, age: 18}
+ * @description put，键值对格式。
+ * */
+export const axiosP = (url, param) => {
+  return new Promise((resolve, reject) => {
+    service({
+      method: 'put',
       url: url,
       data: param,
       headers: {

@@ -13,8 +13,6 @@ import './styles/initialization.css'
 import $ from 'jquery'
 // storage
 import './utils/storage'
-// 图标库
-import './styles/iconfont.css'
 // 选择树样式
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 // svg
