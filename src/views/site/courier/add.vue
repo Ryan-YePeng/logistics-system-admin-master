@@ -64,11 +64,18 @@
         }
       }
     },
+    computed: {
+      userId() {
+        return this.$store.getters.userId
+      }
+    },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            addCourierApi(this.form).then(() => {
+            let data = {...this.form};
+            data.l_user_id = this.userId;
+            addCourierApi(data).then(() => {
               this.$emit('update');
               this.cancel()
             });

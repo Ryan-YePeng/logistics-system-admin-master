@@ -26,7 +26,7 @@ export function updateAnnouncementApi(data) {
 }
 
 // 获得公告
-const getAnnouncementUrl = 'hwz/searchL_announcement?s=';
+const getAnnouncementUrl = 'hwz/searchL_announcement?';
 
 export function getAnnouncementApi(data) {
   return axiosG(getAnnouncementUrl + data)

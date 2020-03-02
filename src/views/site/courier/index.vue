@@ -52,6 +52,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <pagination ref="pagination" @getNewData="getCourier"></pagination>
       </div>
     </el-card>
     <add-courier ref="AddCourier" @update="getCourier"></add-courier>
@@ -63,11 +64,12 @@
   import {getCourierApi, deleteCourierApi} from '@/api/courier'
   import AddCourier from './add'
   import EditCourier from './edit'
+  import pagination from '@/components/pagination'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Courier',
-    components: {EditCourier, AddCourier},
+    components: {EditCourier, AddCourier, pagination},
     data() {
       return {
         formData: [],
@@ -78,13 +80,20 @@
         deleteList: []
       }
     },
+    computed: {
+      userId() {
+        return this.$store.getters.userId
+      }
+    },
     mounted() {
       this.getCourier();
     },
     methods: {
       getCourier() {
         this.isTableLoading = true;
-        getCourierApi(this.courierText).then(result => {
+        let pagination = this.$refs.pagination.pagination;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&s=${this.courierText}`;
+        getCourierApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
         })

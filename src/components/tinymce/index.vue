@@ -25,8 +25,10 @@
   import 'tinymce/plugins/searchreplace' // 全屏
   import 'tinymce/plugins/insertdatetime' // 插入时间
   import 'tinymce/plugins/toc' // 内容列表
-  import 'tinymce/plugins/codesample'
-  import {isEmpty} from "@/utils/common"; // 插入代码
+  import 'tinymce/plugins/codesample' // 插入代码
+
+  import {isEmpty} from "@/utils/common";
+  import {uploadFileApi} from '@/api/file'
 
   export default {
     data() {
@@ -48,6 +50,11 @@
             'bullist numlist toc pastetext|charmap hr insertdatetime | lists image media table link unlink | searchreplace fullscreen'],
           plugins: 'lists image media table wordcount fullscreen help codesample toc insertdatetime  searchreplace  link charmap paste hr',
         },
+      }
+    },
+    computed: {
+      pictureBaseUrl() {
+        return process.env.VUE_APP_PICTURE_BASE_API
       }
     },
     mounted() {
@@ -74,12 +81,12 @@
           // 图片上传
           images_upload_handler: function (blobInfo, success, failure) {
             let data = {};
-            data.file = blobInfo.blob();
-            uploadArticleContentPictureApi(data)
+            data.pic = blobInfo.blob();
+            uploadFileApi(data)
                 .then(result => {
-                  let response = result.data.resultParm.message;
-                  let url = articleContentPictureBaseUrl + response;
-                  if (result.data.status === 200) {
+                  let response = result.data.message;
+                  let url = _this.pictureBaseUrl + response;
+                  if (result.status === 200) {
                     success(url);
                   } else {
                     failure('上传失败！')

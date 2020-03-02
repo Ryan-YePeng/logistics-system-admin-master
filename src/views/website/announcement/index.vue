@@ -48,6 +48,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <pagination ref="pagination" @getNewData="getAnnouncement"></pagination>
       </div>
     </el-card>
     <announcement-detail
@@ -62,11 +63,12 @@
 <script>
   import {deleteAnnouncementApi, getAnnouncementApi} from '@/api/announcement'
   import AnnouncementDetail from './detail'
+  import pagination from '@/components/pagination'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Announcement',
-    components: {AnnouncementDetail},
+    components: {AnnouncementDetail, pagination},
     data() {
       return {
         formData: [],
@@ -85,7 +87,9 @@
     methods: {
       getAnnouncement() {
         this.isTableLoading = true;
-        getAnnouncementApi(this.nameText).then(result => {
+        let pagination = this.$refs.pagination.pagination;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s=${this.nameText}`;
+        getAnnouncementApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
         })

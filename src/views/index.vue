@@ -22,8 +22,9 @@
             <el-dropdown trigger="click" style="cursor: pointer">
               <div class="avatar-box">
                 <el-avatar shape="square" :size="45">
-                  <img v-if="isAdmin" src="../assets/admin.jpg" alt="头像"/>
-                  <img v-else src="../assets/school.png" alt="头像"/>
+                  <img v-if="level == 'level0'" src="../assets/level0.jpg" alt="头像"/>
+                  <img v-if="level == 'level1'" src="../assets/level1.jpg" alt="头像"/>
+                  <img v-if="level == 'level2'" src="../assets/level2.jpg" alt="头像"/>
                 </el-avatar>
                 <i class="el-icon-caret-bottom el-icon--right"></i>
                 <el-dropdown-menu slot="dropdown">
@@ -57,7 +58,6 @@
   import Tag from '../components/tag/index'
   import LeftMenu from '../components/left_menu/index'
   import Drawer from '../components/drawer/index'
-  import * as Cookies from "js-cookie"
 
   export default {
     name: 'index',
@@ -81,9 +81,9 @@
       'active': function () {
         return this.$store.getters.active
       },
-      'isAdmin': function () {
+      'level': function () {
         let data = this.$store.getters.user;
-        return data.authorities[0]['authority'] === "ROLE_ADMIN";
+        return data.authorities[0]['authority']
       }
     },
     watch: {
@@ -117,8 +117,8 @@
       logout() {
         this.$msgBox('确定注销并退出系统吗？', 'warning').then(() => {
           // 清除缓存
-          Cookies.remove('drivingSchoolAdminToken');
-          this.$removeSessionStorage('drivingSchoolAdmin');
+          this.$removeCookiesStorage('logisticsAdminMasterToken');
+          this.$removeSessionStorage('logisticsAdminMasterLayout');
           this.$router.push({name: 'login'});
           location.reload()
         })

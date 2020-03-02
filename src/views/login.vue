@@ -78,6 +78,7 @@
                   const {token} = result.data;
                   const {user} = result.data;
                   this.$store.dispatch('setUser', user);
+                  this.$store.dispatch('setUserId', user.u_id);
                   this.$store.dispatch('setToken', `Bearer ${token}`);
                   // 动态拉取路由和菜单
                   return getRouter();

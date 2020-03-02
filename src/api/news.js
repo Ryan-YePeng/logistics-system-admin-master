@@ -26,10 +26,10 @@ export function updateClassificationApi(data) {
 }
 
 // 获得分类
-const getClassificationUrl = 'hwz/getallL_newclassification';
+const getClassificationUrl = 'hwz/getallL_newclassification?';
 
-export function getClassificationApi() {
-  return axiosG(getClassificationUrl)
+export function getClassificationApi(data) {
+  return axiosG(getClassificationUrl + data)
 }
 
 
@@ -59,7 +59,7 @@ export function updateNewsApi(data) {
 }
 
 // 获得新闻
-const getNewsUrl = 'hwz/searchL_news?s=';
+const getNewsUrl = 'hwz/searchL_news?';
 
 export function getNewsApi(data) {
   return axiosG(getNewsUrl + data)

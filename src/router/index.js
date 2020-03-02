@@ -3,6 +3,7 @@ import store from '../store/index'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import {isEmpty} from '../utils/common'
+import {getUserApi} from '@/api/person'
 import {menu_level0, menu_level1, menu_level2} from './menu'
 
 NProgress.configure({showSpinner: false});
@@ -68,8 +69,9 @@ export function getRouter() {
   return new Promise(resolve => {
     let role;
     let menu;
-    setTimeout(() => {
-      let user = store.getters.user;
+    let userId = store.getters.userId;
+    getUserApi(userId).then(result => {
+      let user = result.data.message;
       store.dispatch('setUser', user);
       role = user.authorities[0].authority;
       if (role === 'level0') {
@@ -91,7 +93,7 @@ export function getRouter() {
         redirect: "/home"
       }]);
       resolve()
-    })
+    });
   });
 }
 

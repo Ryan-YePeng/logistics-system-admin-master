@@ -23,7 +23,6 @@
 
 <script>
   import {updatePasswordApi} from '../../api/person'
-  import * as Cookies from 'js-cookie'
 
   export default {
     data() {
@@ -61,8 +60,8 @@
             updatePasswordApi(data).then(result => {
               this.isLoading = false;
               this.$successMsg('请重新登录！');
-              Cookies.remove('drivingSchoolAdminToken');
-              this.$removeSessionStorage('drivingSchoolAdmin');
+              this.$removeCookiesStorage('logisticsAdminMasterToken');
+              this.$removeSessionStorage('logisticsAdminMasterLayout');
               this.$router.push({name: 'login'});
               location.reload()
             }).catch(() => {

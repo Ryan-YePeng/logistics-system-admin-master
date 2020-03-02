@@ -6,40 +6,63 @@
       </div>
       <div style="text-align: center; margin-bottom: 20px">
         <el-avatar shape="circle" :size="120">
-          <img v-if="isAdmin" src="../../assets/admin.jpg" alt="头像"/>
-          <img v-else src="../../assets/school.png" alt="头像"/>
+          <img v-if="level == 'level0'" src="../../assets/level0.jpg" alt="头像"/>
+          <img v-if="level == 'level1'" src="../../assets/level1.jpg" alt="头像"/>
+          <img v-if="level == 'level2'" src="../../assets/level2.jpg" alt="头像"/>
         </el-avatar>
       </div>
       <ul class="personInfo">
         <li>
-          <span>用户</span>
+          <span>账号</span>
           <span>{{user.username}}</span>
         </li>
         <li>
-          <span>权限</span>
-          <span>{{user.roles[0].namezh}}</span>
+          <span>级别</span>
+          <span v-if="level == 'level0'">总部</span>
+          <span v-if="level == 'level1'">省级</span>
+          <span v-if="level == 'level2'">县级</span>
         </li>
         <li>
-          <span>位置</span>
-          <span>{{location}}</span>
+          <span>网点名称(中)</span>
+          <span>{{user.c__branchesName}}</span>
         </li>
         <li>
-          <span>安全设置</span>
-          <span>
-            <a style="color: #317ef3; cursor: pointer" @click="changePassword">修改密码</a>
-          </span>
+          <span>联系方式(中)</span>
+          <span>{{user.c_br_phone}}</span>
         </li>
+        <li>
+          <span>地址(中)</span>
+          <span>{{user.c_br_address}}</span>
+        </li>
+        <li>
+          <span>网点名称(老挝)</span>
+          <span>{{user.l_branchesName}}</span>
+        </li>
+        <li>
+          <span>联系方式(老挝)</span>
+          <span>{{user.l_br_phone}}</span>
+        </li>
+        <li>
+          <span>地址(老挝)</span>
+          <span>{{user.l_br_address}}</span>
+        </li>
+        <!--        <li>-->
+        <!--          <span>安全设置</span>-->
+        <!--          <span>-->
+        <!--            <a style="color: #317ef3; cursor: pointer" @click="changePassword">修改密码</a>-->
+        <!--          </span>-->
+        <!--        </li>-->
       </ul>
     </el-card>
-    <PasswordDialog ref="passwordDialogForm"></PasswordDialog>
+    <!--    <PasswordDialog ref="passwordDialogForm"></PasswordDialog>-->
   </div>
 </template>
 
 <script>
-  import PasswordDialog from './passwordDialog'
+  // import PasswordDialog from './passwordDialog'
 
   export default {
-    components: {PasswordDialog},
+    // components: {PasswordDialog},
     name: 'person',
     data() {
       return {
@@ -52,17 +75,9 @@
       'user': function () {
         return this.$store.getters.user
       },
-      'location': function () {
-        let str = '';
+      'level': function () {
         let data = this.$store.getters.user;
-        if (data.province) str = `${data.province}`;
-        if (data.city) str = `${data.province}/${data.city}`;
-        if (data.area) str = `${data.province}/${data.city}/${data.area}`;
-        return str
-      },
-      'isAdmin': function () {
-        let data = this.$store.getters.user;
-        return data.authorities[0]['authority'] === "ROLE_ADMIN";
+        return data.authorities[0]['authority']
       }
     },
     methods: {

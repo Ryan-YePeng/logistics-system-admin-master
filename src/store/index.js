@@ -16,16 +16,7 @@ const modules = modulesFiles.keys().reduce((modules, modulePath) => {
 
 const plugins = [
   createPersistedState({
-    key: 'logisticsAdminMasterUser',
-    reducer(val) {
-      return {
-        // 只储存state中的...
-        user: val.user
-      };
-    }
-  }),
-  createPersistedState({
-    key: 'logisticsAdminMaster',
+    key: 'logisticsAdminMasterLayout',
     storage: window.sessionStorage,
     reducer(val) {
       return {
@@ -45,6 +36,7 @@ const plugins = [
     reducer(val) {
       return {
         token: val.token,
+        userId: val.userId
       };
     }
   })

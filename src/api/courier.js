@@ -1,7 +1,7 @@
 import {axiosds, axiosG, axiosK, axiosP} from './request'
 
 // 获得快递员
-const getCourierUrl = 'hwz/searchL_courier?s=';
+const getCourierUrl = 'hwz/searchL_courier?';
 
 export function getCourierApi(data) {
   return axiosG(getCourierUrl + data)

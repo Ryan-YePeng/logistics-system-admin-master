@@ -4,12 +4,12 @@
     <el-form :model="form" :rules="rules" ref="Form" label-width="100px" hide-required-asterisk>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="标题(中文)" prop="c_n_name">
+          <el-form-item label="标题(中文)" prop="c_an_name">
             <el-input v-model="form.c_an_name"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称(老挝)" prop="l_n_name">
+          <el-form-item label="名称(老挝)" prop="l_an_name">
             <el-input v-model="form.l_an_name"></el-input>
           </el-form-item>
         </el-col>
@@ -86,7 +86,7 @@
                 this.goBack()
               });
             } else {
-              data.l_an_id = this.data;
+              data.l_an_id = this.l_an_id;
               updateAnnouncementApi(data).then(() => {
                 this.$emit('update');
                 this.goBack()

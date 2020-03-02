@@ -48,6 +48,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <pagination ref="pagination" @getNewData="getNews"></pagination>
       </div>
     </el-card>
     <news-detail
@@ -63,11 +64,12 @@
 <script>
   import {getNewsApi, getClassificationApi, deleteNewsApi} from '@/api/news'
   import NewsDetail from './detail'
+  import pagination from '@/components/pagination'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'News',
-    components: {NewsDetail},
+    components: {NewsDetail, pagination},
     data() {
       return {
         formData: [],
@@ -82,14 +84,16 @@
     },
     mounted() {
       this.getNews();
-      getClassificationApi().then(result => {
+      getClassificationApi('pageNumber=1&pageCount=10000').then(result => {
         this.classificationList = result.data.message;
       });
     },
     methods: {
       getNews() {
         this.isTableLoading = true;
-        getNewsApi(this.nameText).then(result => {
+        let pagination = this.$refs.pagination.pagination;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s=${this.nameText}`;
+        getNewsApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
         })
