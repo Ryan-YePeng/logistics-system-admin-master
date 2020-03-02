@@ -8,12 +8,12 @@
     <el-form :model="form" :rules="rules" ref="Form" label-width="100px" hide-required-asterisk>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="中国电话" prop="l_s_phone">
+          <el-form-item label="电话(中)" prop="l_s_phone">
             <el-input v-model="form.l_s_phone"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="老挝电话" prop="c_s_phone">
+          <el-form-item label="电话(老挝)" prop="c_s_phone">
             <el-input v-model="form.c_s_phone"></el-input>
           </el-form-item>
         </el-col>

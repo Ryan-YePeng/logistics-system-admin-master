@@ -1,8 +1,8 @@
 <template>
   <div id="help">
-    <el-card class="box-card">
+    <el-card class="box-card" v-show="isShow">
       <div slot="header" class="clearfix">
-        <el-input placeholder="搜索客服电话"
+        <el-input placeholder="搜索"
                   v-model="nameText"
                   style="width: 200px"
                   clearable
@@ -11,10 +11,16 @@
         <el-button type="success" @click="getNews">搜索</el-button>
         <el-button style="float: right" type="primary" @click="add">新增</el-button>
       </div>
+      <el-button :disabled="isDeleteMoreDisabled" type="danger" @click="deleteMore">批量删除</el-button>
       <div>
         <el-table
                 v-loading="isTableLoading"
+                @selection-change="getSelected"
                 :data="formData">
+          <el-table-column
+                  type="selection"
+                  width="55">
+          </el-table-column>
           <el-table-column
                   prop="c_n_name"
                   label="标题(中文)">
@@ -27,14 +33,14 @@
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
               <el-popover
-                      :ref="scope.row.l_nC_id"
+                      :ref="scope.row.l_n_id"
                       placement="top"
                       width="180">
                 <p>确定删除本条数据吗？</p>
                 <div style="text-align: right; margin: 0">
-                  <el-button size="mini" type="text" @click="$refs[scope.row.l_nC_id].doClose()">取消</el-button>
+                  <el-button size="mini" type="text" @click="$refs[scope.row.l_n_id].doClose()">取消</el-button>
                   <el-button :loading="isDeleteLoading" type="primary" size="mini"
-                             @click.stop="deleteNews(scope.row.l_nC_id)">确定
+                             @click.stop="deleteNews(scope.row.l_n_id)">确定
                   </el-button>
                 </div>
                 <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop/>
@@ -44,34 +50,41 @@
         </el-table>
       </div>
     </el-card>
-    <add-news ref="AddNews" @update="getNews" :classificationList="classificationList"></add-news>
-    <edit-news ref="EditNews" @update="getNews" :classificationList="classificationList"></edit-news>
+    <news-detail
+            v-show="!isShow"
+            ref="NewsDetail"
+            @close="close"
+            @update="getNews"
+            :classificationList="classificationList">
+    </news-detail>
   </div>
 </template>
 
 <script>
   import {getNewsApi, getClassificationApi, deleteNewsApi} from '@/api/news'
-  import AddNews from './add'
-  import EditNews from './edit'
+  import NewsDetail from './detail'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'News',
-    components: {EditNews, AddNews},
+    components: {NewsDetail},
     data() {
       return {
         formData: [],
         classificationList: [],
         isTableLoading: false,
         isDeleteLoading: false,
-        nameText: ''
+        nameText: '',
+        isShow: true,
+        isDeleteMoreDisabled: true,
+        deleteList: []
       }
     },
     mounted() {
       this.getNews();
       getClassificationApi().then(result => {
         this.classificationList = result.data.message;
-      })
+      });
     },
     methods: {
       getNews() {
@@ -82,16 +95,24 @@
         })
       },
       add() {
-        this.$refs.AddNews.dialogTableVisible = true
+        this.isShow = false;
+        let _this = this.$refs.NewsDetail;
+        _this.title = '新增';
+      },
+      close() {
+        this.isShow = true
       },
       edit(obj) {
-        let _this = this.$refs.EditNews;
+        let _this = this.$refs.NewsDetail;
+        _this.title = '编辑';
+        _this.l_n_id = obj.l_n_id;
         objectEvaluate(obj, _this.form);
-        _this.dialogTableVisible = true
+        _this.setContent(obj.c_n_content);
+        this.isShow = false;
       },
       deleteNews(id) {
         this.isDeleteLoading = true;
-        deleteNewsApi(id)
+        deleteNewsApi([id])
             .then(() => {
               this.isDeleteLoading = false;
               this.$refs[id].doClose();
@@ -101,6 +122,19 @@
               this.isDeleteLoading = false;
               this.$refs[id].doClose()
             });
+      },
+      getSelected(array) {
+        this.deleteList = array.map(item => {
+          return item.l_n_id
+        });
+        this.isDeleteMoreDisabled = array.length === 0;
+      },
+      deleteMore() {
+        this.$msgBox().then(() => {
+          deleteNewsApi(this.deleteList).then(() => {
+            this.getNews()
+          })
+        })
       }
     }
   }

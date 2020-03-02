@@ -2,7 +2,7 @@
   <div id="help">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <el-input placeholder="搜索客服电话"
+        <el-input placeholder="搜索"
                   v-model="phoneText"
                   style="width: 200px"
                   clearable
@@ -17,11 +17,11 @@
                 :data="formData">
           <el-table-column
                   prop="c_s_phone"
-                  label="中国电话">
+                  label="电话(中)">
           </el-table-column>
           <el-table-column
                   prop="l_s_phone"
-                  label="老挝电话">
+                  label="电话(老挝)">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">

@@ -137,7 +137,7 @@ export const axiosds = (url, param) => {
   return new Promise((resolve, reject) => {
     service({
       method: 'delete',
-      url: `${url}/${param.join(',')}`
+      url: `${url}${param.join(',')}`
     }).then(result => {
       resolve(result)
     }).catch(error => {
