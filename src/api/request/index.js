@@ -158,9 +158,9 @@ export const axiosD = (url, param) => {
       params: {
         ids: param
       },
-      paramsSerializer: params => {
+      paramsSerializer: [(params) => {
         return qs.stringify(params, {indices: false})
-      }
+      }]
     }).then(result => {
       resolve(result)
     }).catch(error => {

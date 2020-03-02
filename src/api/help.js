@@ -1,7 +1,7 @@
-import {axiosD, axiosd, axiosG, axiosK, axiosP} from './request'
+import {axiosd, axiosG, axiosK, axiosP} from './request'
 
 // 获得电话
-const getPhoneUrl = 'hwz/getL_service?s=';
+const getPhoneUrl = 'hwz/searchL_service?s=';
 
 export function getPhoneApi(data) {
   return axiosG(getPhoneUrl + data)
@@ -22,8 +22,8 @@ export function updatePhoneApi(data) {
 }
 
 // 删除电话
-const deletePhoneUrl = 'hwz/deleteL_service';
+const deletePhoneUrl = 'hwz/deleteL_service?longs=';
 
 export function deletePhoneApi(data) {
-  return axiosD(deletePhoneUrl, data)
+  return axiosd(deletePhoneUrl + data)
 }

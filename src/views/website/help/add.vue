@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-          title="添加电话"
+          title="新增电话"
           width="700px"
           @close="cancel"
           :close-on-click-modal="false"

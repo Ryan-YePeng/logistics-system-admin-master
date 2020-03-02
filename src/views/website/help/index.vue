@@ -13,13 +13,8 @@
       </div>
       <div>
         <el-table
-                :loading="isTableLoading"
-                :data="formData"
-                @selection-change="getSelected">
-          <el-table-column
-                  type="selection"
-                  width="55">
-          </el-table-column>
+                v-loading="isTableLoading"
+                :data="formData">
           <el-table-column
                   prop="c_s_phone"
                   label="中国电话">
@@ -32,14 +27,14 @@
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
               <el-popover
-                      :ref="scope.row.id"
+                      :ref="scope.row.l_s_id"
                       placement="top"
                       width="180">
                 <p>确定删除本条数据吗？</p>
                 <div style="text-align: right; margin: 0">
-                  <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
+                  <el-button size="mini" type="text" @click="$refs[scope.row.l_s_id].doClose()">取消</el-button>
                   <el-button :loading="isDeleteLoading" type="primary" size="mini"
-                             @click.stop="delete(scope.row.articleId)">确定
+                             @click.stop="deletePhone(scope.row.l_s_id)">确定
                   </el-button>
                 </div>
                 <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop/>
@@ -76,7 +71,9 @@
     },
     methods: {
       getPhone() {
+        this.isTableLoading = true;
         getPhoneApi(this.phoneText).then(result => {
+          this.isTableLoading = false;
           this.formData = result.data.message;
         })
       },
@@ -88,14 +85,18 @@
         objectEvaluate(obj, _this.form);
         _this.dialogTableVisible = true
       },
-      getSelected(array) {
-        let list = array.map(item => {
-          return item.l_s_id
-        });
-        list = [1, 5, 6, 7, 8];
-        deletePhoneApi(list).then(result => {
-          console.log(result)
-        })
+      deletePhone(id) {
+        this.isDeleteLoading = true;
+        deletePhoneApi(id)
+            .then(() => {
+              this.isDeleteLoading = false;
+              this.$refs[id].doClose();
+              this.getPhone()
+            })
+            .catch(() => {
+              this.isDeleteLoading = false;
+              this.$refs[id].doClose()
+            });
       }
     }
   }
