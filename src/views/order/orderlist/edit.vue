@@ -1,32 +1,212 @@
 <template>
   <el-dialog
-          title="新增快递员"
-          width="800px"
+          title="编辑订单"
           @close="cancel"
+          fullscreen
           :close-on-click-modal="false"
           :visible.sync="dialogTableVisible">
-    <el-form :model="form" :rules="rules" ref="Form" label-width="120px" hide-required-asterisk>
+    <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="姓名(中)" prop="c_co_name">
-            <el-input v-model="form.c_co_name"></el-input>
+          <el-form-item label="寄件人姓名:" prop="c_o_startName">
+            <el-input v-model="form.c_o_startName"></el-input>
           </el-form-item>
-          <el-form-item label="编号(中)" prop="c_co_number">
-            <el-input v-model="form.c_co_number"></el-input>
+          <el-form-item label="始发地:" prop="c_o_provenance">
+            <el-input v-model="form.c_o_provenance"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式(中)" prop="c_co_contact">
-            <el-input v-model="form.c_co_contact"></el-input>
+          <el-form-item label="单位名称:">
+            <el-input v-model="form.c_o_startUnitName"></el-input>
+          </el-form-item>
+          <el-form-item label="寄件人详细地址:" prop="c_o_startAddress">
+            <el-input v-model="form.c_o_startAddress"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话:" prop="c_o_startPhone">
+            <el-input v-model="form.c_o_startPhone"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="姓名(老挝)" prop="l_co_name">
-            <el-input v-model="form.l_co_name"></el-input>
+          <el-form-item prop="l_o_startName">
+            <el-input v-model="form.l_o_startName"></el-input>
           </el-form-item>
-          <el-form-item label="编号(老挝)" prop="l_co_number">
-            <el-input v-model="form.l_co_number"></el-input>
+          <el-form-item prop="l_o_provenance">
+            <el-input v-model="form.l_o_provenance"></el-input>
           </el-form-item>
-          <el-form-item label="联系方式(老挝)" prop="l_co_contact">
-            <el-input v-model="form.l_co_contact"></el-input>
+          <el-form-item>
+            <el-input v-model="form.l_o_startUnitName"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_startAddress">
+            <el-input v-model="form.l_o_startAddress"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_startPhone">
+            <el-input v-model="form.l_o_startPhone"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="快递种类:">
+        <el-radio-group v-model="form.o_kinds">
+          <el-radio label="物品"></el-radio>
+          <el-radio label="文件"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="重量:">
+            <el-input v-model="form.o_weight"></el-input>
+          </el-form-item>
+          <el-form-item label="体积:">
+            <el-input v-model="form.o_volume"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="内件品名:">
+            <el-input v-model="form.c_o_itemName"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="form.l_o_itemName"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="内件品数量:">
+            <el-input v-model="form.o_itemNumber"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="寄件人证件号:" prop="c_o_sendersId">
+            <el-input v-model="form.c_o_sendersId"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人姓名:" prop="c_o_endName">
+            <el-input v-model="form.c_o_endName"></el-input>
+          </el-form-item>
+          <el-form-item label="目的地:" prop="c_o_destination">
+            <el-input v-model="form.c_o_destination"></el-input>
+          </el-form-item>
+          <el-form-item label="单位名称:">
+            <el-input v-model="form.c_o_endUnitName"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
+            <el-input v-model="form.c_o_endAddress"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
+            <el-input v-model="form.c_o_endPhone"></el-input>
+          </el-form-item>
+          <el-form-item label="收件人证件号:" prop="c_o_recipientId">
+            <el-input v-model="form.c_o_recipientId"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="l_o_sendersId">
+            <el-input v-model="form.l_o_sendersId"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_endName">
+            <el-input v-model="form.l_o_endName"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_destination">
+            <el-input v-model="form.l_o_destination"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.l_o_endUnitName"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_endAddress">
+            <el-input v-model="form.l_o_endAddress"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_endPhone">
+            <el-input v-model="form.l_o_endPhone"></el-input>
+          </el-form-item>
+          <el-form-item prop="l_o_recipientId">
+            <el-input v-model="form.l_o_recipientId"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="付款方式:">
+            <el-radio-group v-model="form.o_payment">
+              <el-radio label="现金"></el-radio>
+              <el-radio label="到付"></el-radio>
+              <el-radio label="协议结算"></el-radio>
+              <el-radio label="保价"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="保价金额:" v-if="form.o_payment==='保价'">
+            <el-input v-model="form.o_amount"></el-input>
+          </el-form-item>
+          <el-form-item label="代收贷款:">
+            <el-input v-model="form.o_cod"></el-input>
+          </el-form-item>
+          <el-form-item label="运费:">
+            <el-input v-model="form.o_freight"></el-input>
+          </el-form-item>
+          <el-form-item label="加急费:">
+            <el-input v-model="form.o_urgentFee"></el-input>
+          </el-form-item>
+          <el-form-item label="包装费:">
+            <el-input v-model="form.o_packing"></el-input>
+          </el-form-item>
+          <el-form-item label="保价费:">
+            <el-input v-model="form.o_valuationFee"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="总计:">
+            <el-input v-model="form.c_o_total"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="form.l_o_total"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-form-item label="状态:" prop="l_log_state">
+        <el-select v-model="form.l_log_state" placeholder="请选择状态">
+          <el-option label="揽收" value="揽收"></el-option>
+          <el-option label="出库" value="出库"></el-option>
+          <el-option label="到达" value="到达"></el-option>
+          <el-option label="派送" value="派送"></el-option>
+          <el-option label="签收" value="签收"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="备注:">
+            <el-input v-model="form.c_log_note"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item>
+            <el-input v-model="form.l_log_note"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="快递员:">
+            <el-select v-model="form.c_log_member" placeholder="请选择活动区域">
+              <el-option
+                      v-for="item in courierList"
+                      :label="item.c_co_name"
+                      :value="item.c_co_name">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="网点:">
+            <el-select v-model="form.l_log_branches" placeholder="请选择活动区域">
+              <el-option
+                      v-for="item in siteList"
+                      :label="item.c__branchesName"
+                      :value="item.c__branchesName">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -39,37 +219,124 @@
 </template>
 
 <script>
-  import {updateCourierApi} from '@/api/courier'
+  import {editOrderApi} from '@/api/order'
 
   export default {
-    name: "EditCourier",
+    name: "EditOrder",
     data() {
       return {
         dialogTableVisible: false,
         form: {
-          l_co_id: 0,
-          c_co_name: '',
-          c_co_number: '',
-          c_co_contact: '',
-          l_co_name: '',
-          l_co_number: '',
-          l_co_contact: ''
+          o_id: 0,
+
+          c_o_startName: '', // 寄件人姓名
+          c_o_provenance: '', // 始发地
+          c_o_startUnitName: '',
+          c_o_startAddress: '', // 寄件人地址
+          c_o_startPhone: '', // 联系电话
+
+          l_o_startName: '', // 寄件人姓名
+          l_o_provenance: '', // 始发地
+          l_o_startUnitName: '',
+          l_o_startAddress: '', // 寄件人地址
+          l_o_startPhone: '', // 联系电话
+
+          o_kinds: '物品',
+          o_weight: '',
+          o_volume: '',
+
+          c_o_itemName: '',
+
+          l_o_itemName: '',
+
+          o_itemNumber: '',
+
+          c_o_sendersId: '', // 寄件人证件号
+          c_o_endName: '', // 收件人姓名
+          c_o_destination: '', // 目的地
+          c_o_endUnitName: '',
+          c_o_endAddress: '', // 收件人地址
+          c_o_endPhone: '', // 收件人电话
+          c_o_recipientId: '', // 收件人证件号
+
+          l_o_sendersId: '', // 寄件人证件号
+          l_o_endName: '', // 收件人姓名
+          l_o_destination: '', // 目的地
+          l_o_endUnitName: '',
+          l_o_endAddress: '', // 收件人地址
+          l_o_endPhone: '', // 收件人电话
+          l_o_recipientId: '', // 收件人证件号
+
+          o_payment: '现金',
+          o_amount: '',
+          o_cod: '',
+          o_freight: '',
+          o_urgentFee: '',
+          o_packing: '',
+          o_valuationFee: '',
+
+          c_o_total: '',
+
+          l_o_total: '',
+
+          l_log_state: '揽收', // 状态
+
+          c_log_note: '',
+          l_log_note: '',
+
+          c_log_member: '',
+
+          l_log_branches: ''
         },
         rules: {
-          c_co_name: {required: true, message: '请输入姓名', trigger: 'blur'},
-          c_co_number: {required: true, message: '请输入编号', trigger: 'blur'},
-          c_co_contact: {required: true, message: '请输入联系方式', trigger: 'blur'},
-          l_co_name: {required: true, message: '请输入姓名', trigger: 'blur'},
-          l_co_number: {required: true, message: '请输入编号', trigger: 'blur'},
-          l_co_contact: {required: true, message: '请输入联系方式', trigger: 'blur'},
+          c_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
+          c_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
+          c_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
+          c_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
+
+          l_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
+          l_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
+          l_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
+          l_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
+
+          c_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
+          c_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+          c_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
+          c_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
+          c_o_endPhone: {required: true, message: '请输收件人电话', trigger: 'blur'},
+          c_o_recipientId: {required: true, message: '请输入收件人证件号', trigger: 'blur'},
+
+          l_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
+          l_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+          l_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
+          l_o_endAddress: {required: true, message: '请输入联系方式', trigger: 'blur'},
+          l_o_endPhone: {required: true, message: '请输入收件人地址', trigger: 'blur'},
+          l_o_recipientId: {required: true, message: '请输收件人电话', trigger: 'blur'},
+          l_log_state: {required: true, message: '请选择状态', trigger: 'change'},
         }
+      }
+    },
+    props: {
+      siteList: {
+        type: Array,
+        default: () => []
+      },
+      courierList: {
+        type: Array,
+        default: () => []
+      }
+    },
+    computed: {
+      userId() {
+        return this.$store.getters.userId
       }
     },
     methods: {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            updateCourierApi(this.form).then(() => {
+            let data = {...this.form};
+            editOrderApi(data).then(() => {
               this.$emit('update');
               this.cancel()
             });

@@ -6,37 +6,43 @@
                   v-model="orderText"
                   style="width: 150px"
                   clearable
-                  @keyup.enter.native="getOrder">
+                  @keyup.enter.native="searchOrder">
         </el-input>
         <el-input placeholder="姓名"
                   v-model="nameText"
                   style="width: 120px"
                   clearable
-                  @keyup.enter.native="getOrder">
+                  @keyup.enter.native="searchOrder">
         </el-input>
         <el-input placeholder="电话"
                   v-model="phoneText"
                   style="width: 120px"
                   clearable
-                  @keyup.enter.native="getOrder">
+                  @keyup.enter.native="searchOrder">
         </el-input>
         <el-input placeholder="时间"
                   v-model="timeText"
                   style="width: 150px"
                   clearable
-                  @keyup.enter.native="getOrder">
+                  @keyup.enter.native="searchOrder">
         </el-input>
-        <el-input placeholder="状态"
-                  v-model="statusText"
-                  style="width: 120px"
-                  clearable
-                  @keyup.enter.native="getOrder">
-        </el-input>
-        <el-button type="success" @click="getOrder">搜索</el-button>
+        <el-select
+                v-model="statusText"
+                style="width:120px"
+                placeholder="状态"
+                @change="searchOrder"
+                clearable>
+          <el-option label="揽收" value="揽收"></el-option>
+          <el-option label="出库" value="出库"></el-option>
+          <el-option label="到达" value="到达"></el-option>
+          <el-option label="派送" value="派送"></el-option>
+          <el-option label="签收" value="签收"></el-option>
+        </el-select>
+        <el-button type="success" @click="searchOrder">搜索全部</el-button>
         <el-button type="warning" @click="clearAll">清空</el-button>
-        <el-button style="float: right" type="primary" @click="add">新增</el-button>
       </div>
       <el-button :disabled="isDeleteMoreDisabled" type="danger" @click="deleteMore">批量删除</el-button>
+      <el-button type="success" @click="exportExcel">导出</el-button>
       <div>
         <el-table
                 v-loading="isTableLoading"
@@ -111,6 +117,17 @@
                     <el-form-item>{{props.row.l_o_total}}</el-form-item>
                   </el-col>
                 </el-row>
+                <el-form-item label="状态:">{{props.row.l_log_state}}</el-form-item>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="备注:">{{props.row.c_log_note}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>{{props.row.l_log_note}}</el-form-item>
+                  </el-col>
+                </el-row>
+                <el-form-item label="快递员:">{{props.row.c_log_member}}</el-form-item>
+                <el-form-item label="网点:">{{props.row.l_log_branches}}</el-form-item>
               </el-form>
             </template>
           </el-table-column>
@@ -119,8 +136,12 @@
           <el-table-column prop="c_o_startPhone" label="寄件人联系电话"></el-table-column>
           <el-table-column prop="c_o_endName" label="收件人姓名"></el-table-column>
           <el-table-column prop="c_o_endPhone" label="收件人联系电话"></el-table-column>
-          <el-table-column prop="o_payment" label="付款方式"></el-table-column>
-          <el-table-column prop="c_o_total" label="总计"></el-table-column>
+          <el-table-column prop="l_o_time" label="录入时间"></el-table-column>
+          <el-table-column prop="l_log_state" label="状态"></el-table-column>
+
+
+
+
           <el-table-column fixed="right" label="操作" align="center" width="120">
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
@@ -143,21 +164,20 @@
         <pagination ref="pagination" @getNewData="getOrder"></pagination>
       </div>
     </el-card>
-    <add-order ref="AddOrder" @update="getOrder"></add-order>
-    <edit-order ref="EditOrder" @update="getOrder"></edit-order>
+    <edit-order ref="EditOrder" @update="getOrder" :siteList="siteList" :courierList="courierList"></edit-order>
   </div>
 </template>
 
 <script>
-  import {getOrderApi, deleteOrderApi} from '@/api/order'
-  import AddOrder from './add'
+  import {getOrderApi, deleteOrderApi, searchOrderApi, exportOrderApi, getAllSiteApi} from '@/api/order'
+  import {getCourierApi} from '@/api/courier'
   import EditOrder from './edit'
   import pagination from '@/components/pagination'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Order',
-    components: {EditOrder, AddOrder, pagination},
+    components: {EditOrder, pagination},
     data() {
       return {
         formData: [],
@@ -170,36 +190,68 @@
         nameText: '',
         phoneText: '',
         timeText: '',
-        statusText: ''
+        statusText: '',
         /*搜索*/
+        siteList: [],
+        courierList: []
       }
     },
     computed: {
       userId() {
         return this.$store.getters.userId
+      },
+      i() {
+        let authority = this.$store.getters.user.authorities[0]['authority'];
+        if (authority === 'level0') {
+          return 0
+        } else if (authority === 'level') {
+          return 1
+        } else {
+          return 2
+        }
       }
     },
     mounted() {
       this.getOrder();
+      getAllSiteApi().then(result => { // 获得所有网点
+        this.siteList = result.data.message
+      });
+      let param = `u_id=${this.userId}&pageNumber=1&pageCount=99999&s=`;
+      getCourierApi(param).then(result => {
+        this.courierList = result.data.message
+      })
     },
     methods: {
+      // 获得分配到的订单
       getOrder() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&s4${this.timeText}&s5${this.statusText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&i=${this.i}`;
         getOrderApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
           pagination.total = result.data.status;
         })
       },
-      add() {
-        this.$refs.AddOrder.dialogTableVisible = true
+      // 搜索全部订单
+      searchOrder() {
+        this.isTableLoading = true;
+        let pagination = this.$refs.pagination.pagination;
+        let param = `pageNumber=1&pageCount=999999&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&s4=${this.timeText}&s5=${this.statusText}`;
+        searchOrderApi(param).then(result => {
+          this.isTableLoading = false;
+          this.formData = result.data.message;
+          pagination.total = 0;
+        })
       },
       edit(obj) {
         let _this = this.$refs.EditOrder;
         objectEvaluate(obj, _this.form);
         _this.dialogTableVisible = true
+      },
+      exportExcel() {
+        let param = `u_id=${this.userId}&i=${this.i}`;
+        exportOrderApi(param)
       },
       deleteOrder(id) {
         this.isDeleteLoading = true;
@@ -241,7 +293,7 @@
 
 <style lang="scss">
   #order {
-    .el-form-item {
+    .el-form-item--mini.el-form-item {
       margin-bottom: 2px !important;
     }
   }

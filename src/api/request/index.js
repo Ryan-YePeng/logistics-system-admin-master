@@ -55,7 +55,8 @@ service.interceptors.response.use( //响应拦截
           errorMessage('网络错误，请检查您的网络状况！')
         }
       }
-      const {status, message} = error.response.data;
+      const {message} = error.response.data;
+      const {status} = error.response;
       /* 401 */
       if (status === 401) {
         if (errorStatus === status) return;
@@ -88,7 +89,7 @@ service.interceptors.response.use( //响应拦截
  * @description 白名单，不添加token的接口
  * */
 const ignoreTokenArray = [
-  "common/login"
+  "auth/login"
 ];
 const isAddToken = url => {
   return ignoreTokenArray.some(item => {
