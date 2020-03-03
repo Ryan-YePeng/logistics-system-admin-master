@@ -55,8 +55,8 @@
               </el-popover>
             </template>
           </el-table-column>
-          <pagination ref="pagination" @getNewData="getSite"></pagination>
         </el-table>
+        <pagination ref="pagination" @getNewData="getSite"></pagination>
       </div>
     </el-card>
     <add-site ref="AddSite" @update="getSite"></add-site>
@@ -100,6 +100,7 @@
         getSiteApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
+          pagination.total = result.data.status
         })
       },
       add() {

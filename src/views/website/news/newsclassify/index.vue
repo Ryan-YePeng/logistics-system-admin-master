@@ -37,7 +37,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination ref="pagination" @getNewData="getClassification"></pagination>
       </div>
     </el-card>
     <add-classification ref="AddClassification" @update="getClassification"></add-classification>
@@ -49,12 +48,11 @@
   import {getClassificationApi, deleteClassificationApi} from '@/api/news'
   import AddClassification from './add'
   import EditClassification from './edit'
-  import pagination from '@/components/pagination'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Classification',
-    components: {EditClassification, AddClassification,pagination},
+    components: {EditClassification, AddClassification},
     data() {
       return {
         formData: [],
@@ -68,8 +66,7 @@
     methods: {
       getClassification() {
         this.isTableLoading = true;
-        let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}`;
+        let param = `pageNumber=1&pageCount=99999`;
         getClassificationApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;

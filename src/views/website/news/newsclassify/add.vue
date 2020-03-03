@@ -84,6 +84,8 @@
 
 <style lang="scss">
   #add-classification {
+    padding: 0 !important;
+
     .el-textarea__inner {
       min-height: 150px !important;
     }

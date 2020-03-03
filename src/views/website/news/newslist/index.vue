@@ -84,7 +84,7 @@
     },
     mounted() {
       this.getNews();
-      getClassificationApi('pageNumber=1&pageCount=10000').then(result => {
+      getClassificationApi('pageNumber=1&pageCount=99999').then(result => {
         this.classificationList = result.data.message;
       });
     },
@@ -96,6 +96,7 @@
         getNewsApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
+          pagination.total = result.data.status;
         })
       },
       add() {

@@ -96,6 +96,7 @@
         getCourierApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
+          pagination.total = result.data.status
         })
       },
       add() {
