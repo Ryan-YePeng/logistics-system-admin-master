@@ -22,7 +22,7 @@ export function getMySiteApi(data) {
 }
 
 // 分配单号
-const giveNumberUrl = 'hdd/toL_order?';
+const giveNumberUrl = 'hdd/toL_order';
 
 export function giveNumberApi(data) {
   return axiosK(giveNumberUrl, data)

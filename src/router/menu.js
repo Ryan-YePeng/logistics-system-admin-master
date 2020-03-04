@@ -1,6 +1,6 @@
 module.exports = {
   /**
-   * @description level0菜单
+   * @description level0菜单 总部
    */
   menu_level0: [
     {
@@ -91,7 +91,7 @@ module.exports = {
     }
   ],
   /**
-   * @description level1菜单
+   * @description level1菜单 省级
    */
   menu_level1: [
     {
@@ -138,7 +138,7 @@ module.exports = {
     }
   ],
   /**
-   * @description level2菜单
+   * @description level2菜单 县级
    */
   menu_level2: [
     {
@@ -169,12 +169,6 @@ module.exports = {
       "path": "site",
       "component": "site",
       "children": [
-        {
-          "name": "网点列表",
-          "icon": "sitelist",
-          "path": "sitelist",
-          "component": "sitelist"
-        },
         {
           "name": "快递员列表",
           "icon": "courier",

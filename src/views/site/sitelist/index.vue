@@ -41,14 +41,14 @@
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
               <el-popover
-                      :ref="scope.row.l_co_id"
+                      :ref="scope.row.u_id"
                       placement="top"
                       width="180">
                 <p>确定删除本条数据吗？</p>
                 <div style="text-align: right; margin: 0">
-                  <el-button size="mini" type="text" @click="$refs[scope.row.l_co_id].doClose()">取消</el-button>
+                  <el-button size="mini" type="text" @click="$refs[scope.row.u_id].doClose()">取消</el-button>
                   <el-button :loading="isDeleteLoading" type="primary" size="mini"
-                             @click.stop="deleteSite(scope.row.l_co_id)">确定
+                             @click.stop="deleteSite(scope.row.u_id)">确定
                   </el-button>
                 </div>
                 <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop/>

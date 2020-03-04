@@ -191,7 +191,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="快递员:">
-            <el-select v-model="form.c_log_member" placeholder="请选择活动区域">
+            <el-select v-model="form.c_log_member" placeholder="请选择快递员">
               <el-option
                       v-for="item in courierList"
                       :label="item.c_co_name"
@@ -200,7 +200,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="网点:">
-            <el-select v-model="form.l_log_branches" placeholder="请选择活动区域">
+            <el-select v-model="form.l_log_branches" placeholder="请选择网点">
               <el-option
                       v-for="item in siteList"
                       :label="item.c__branchesName"

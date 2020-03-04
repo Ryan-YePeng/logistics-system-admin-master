@@ -163,3 +163,17 @@ export function validateIdNo(rule, value, callback) {
   }
 }
 
+/* 是否为零和非零开头的数字*/
+export function validateOneToThirteenNumber(rule, value, callback) {
+//  const reg = /^[0-9]*$/;
+  const reg = /^(0|[1-9][0-9]*)$/;
+  if (value === '' || value === undefined || value == null) {
+    callback()
+  } else {
+    if ((!reg.test(value)) && value !== '') {
+      callback(new Error('请输入一个数字'))
+    } else {
+      callback()
+    }
+  }
+}

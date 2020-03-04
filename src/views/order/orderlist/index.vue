@@ -140,8 +140,6 @@
           <el-table-column prop="l_log_state" label="状态"></el-table-column>
 
 
-
-
           <el-table-column fixed="right" label="操作" align="center" width="120">
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
@@ -204,7 +202,7 @@
         let authority = this.$store.getters.user.authorities[0]['authority'];
         if (authority === 'level0') {
           return 0
-        } else if (authority === 'level') {
+        } else if (authority === 'level1') {
           return 1
         } else {
           return 2

@@ -8,7 +8,7 @@
             <h3 class="title">物流系统</h3></el-form-item>
           <el-form-item prop="username">
             <el-input v-model="loginUser.username" type="text" auto-complete="off" placeholder="账号">
-              <i slot="prefix" class="el-icon-user-solid"></i>
+              <svg-icon slot="prefix" icon-class="user"></svg-icon>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
