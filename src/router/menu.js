@@ -54,6 +54,13 @@ module.exports = {
       "component": "order",
       "children": [
         {
+          "name": "添加订单",
+          "icon": "addorder",
+          "path": "addorder",
+          "component": "addorder",
+          "children": []
+        },
+        {
           "name": "订单列表",
           "icon": "orderlist",
           "path": "orderlist",
@@ -101,6 +108,13 @@ module.exports = {
       "component": "order",
       "children": [
         {
+          "name": "添加订单",
+          "icon": "addorder",
+          "path": "addorder",
+          "component": "addorder",
+          "children": []
+        },
+        {
           "name": "订单列表",
           "icon": "orderlist",
           "path": "orderlist",
@@ -147,6 +161,13 @@ module.exports = {
       "path": "order",
       "component": "order",
       "children": [
+        {
+          "name": "添加订单",
+          "icon": "addorder",
+          "path": "addorder",
+          "component": "addorder",
+          "children": []
+        },
         {
           "name": "订单列表",
           "icon": "orderlist",

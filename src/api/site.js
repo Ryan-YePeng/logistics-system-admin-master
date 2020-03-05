@@ -22,7 +22,7 @@ export function updateSiteApi(data) {
 }
 
 // 获得网点
-const getSiteUrl = 'hdd/searchUser?';
+const getSiteUrl = 'hdd/getUsers?';
 
 export function getSiteApi(data) {
   return axiosG(getSiteUrl + data)

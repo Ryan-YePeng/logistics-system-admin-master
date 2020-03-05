@@ -1,172 +1,179 @@
 <template>
   <el-dialog
-          title="编辑订单"
+          title="更新订单"
           @close="cancel"
           fullscreen
           :close-on-click-modal="false"
           :visible.sync="dialogTableVisible">
     <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="寄件人姓名:" prop="c_o_startName">
-            <el-input v-model="form.c_o_startName"></el-input>
-          </el-form-item>
-          <el-form-item label="始发地:" prop="c_o_provenance">
-            <el-input v-model="form.c_o_provenance"></el-input>
-          </el-form-item>
-          <el-form-item label="单位名称:">
-            <el-input v-model="form.c_o_startUnitName"></el-input>
-          </el-form-item>
-          <el-form-item label="寄件人详细地址:" prop="c_o_startAddress">
-            <el-input v-model="form.c_o_startAddress"></el-input>
-          </el-form-item>
-          <el-form-item label="联系电话:" prop="c_o_startPhone">
-            <el-input v-model="form.c_o_startPhone"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="l_o_startName">
-            <el-input v-model="form.l_o_startName"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_provenance">
-            <el-input v-model="form.l_o_provenance"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="form.l_o_startUnitName"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_startAddress">
-            <el-input v-model="form.l_o_startAddress"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_startPhone">
-            <el-input v-model="form.l_o_startPhone"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="快递种类:">
-        <el-radio-group v-model="form.o_kinds">
-          <el-radio label="物品"></el-radio>
-          <el-radio label="文件"></el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="重量:">
-            <el-input v-model="form.o_weight"></el-input>
-          </el-form-item>
-          <el-form-item label="体积:">
-            <el-input v-model="form.o_volume"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="内件品名:">
-            <el-input v-model="form.c_o_itemName"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <el-input v-model="form.l_o_itemName"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="内件品数量:">
-            <el-input v-model="form.o_itemNumber"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="寄件人证件号:" prop="c_o_sendersId">
-            <el-input v-model="form.c_o_sendersId"></el-input>
-          </el-form-item>
-          <el-form-item label="收件人姓名:" prop="c_o_endName">
-            <el-input v-model="form.c_o_endName"></el-input>
-          </el-form-item>
-          <el-form-item label="目的地:" prop="c_o_destination">
-            <el-input v-model="form.c_o_destination"></el-input>
-          </el-form-item>
-          <el-form-item label="单位名称:">
-            <el-input v-model="form.c_o_endUnitName"></el-input>
-          </el-form-item>
-          <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
-            <el-input v-model="form.c_o_endAddress"></el-input>
-          </el-form-item>
-          <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
-            <el-input v-model="form.c_o_endPhone"></el-input>
-          </el-form-item>
-          <el-form-item label="收件人证件号:" prop="c_o_recipientId">
-            <el-input v-model="form.c_o_recipientId"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="l_o_sendersId">
-            <el-input v-model="form.l_o_sendersId"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_endName">
-            <el-input v-model="form.l_o_endName"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_destination">
-            <el-input v-model="form.l_o_destination"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="form.l_o_endUnitName"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_endAddress">
-            <el-input v-model="form.l_o_endAddress"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_endPhone">
-            <el-input v-model="form.l_o_endPhone"></el-input>
-          </el-form-item>
-          <el-form-item prop="l_o_recipientId">
-            <el-input v-model="form.l_o_recipientId"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="付款方式:">
-            <el-radio-group v-model="form.o_payment">
-              <el-radio label="现金"></el-radio>
-              <el-radio label="到付"></el-radio>
-              <el-radio label="协议结算"></el-radio>
-              <el-radio label="保价"></el-radio>
+
+      <el-collapse>
+        <el-collapse-item title="订单详情" name="1">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="寄件人姓名:" prop="c_o_startName">
+                <el-input v-model="form.c_o_startName"></el-input>
+              </el-form-item>
+              <el-form-item label="始发地:" prop="c_o_provenance">
+                <el-input v-model="form.c_o_provenance"></el-input>
+              </el-form-item>
+              <el-form-item label="单位名称:">
+                <el-input v-model="form.c_o_startUnitName"></el-input>
+              </el-form-item>
+              <el-form-item label="寄件人详细地址:" prop="c_o_startAddress">
+                <el-input v-model="form.c_o_startAddress"></el-input>
+              </el-form-item>
+              <el-form-item label="联系电话:" prop="c_o_startPhone">
+                <el-input v-model="form.c_o_startPhone"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="l_o_startName">
+                <el-input v-model="form.l_o_startName"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_provenance">
+                <el-input v-model="form.l_o_provenance"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="form.l_o_startUnitName"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_startAddress">
+                <el-input v-model="form.l_o_startAddress"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_startPhone">
+                <el-input v-model="form.l_o_startPhone"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="快递种类:">
+            <el-radio-group v-model="form.o_kinds">
+              <el-radio label="物品"></el-radio>
+              <el-radio label="文件"></el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="保价金额:" v-if="form.o_payment==='保价'">
-            <el-input v-model="form.o_amount"></el-input>
-          </el-form-item>
-          <el-form-item label="代收贷款:">
-            <el-input v-model="form.o_cod"></el-input>
-          </el-form-item>
-          <el-form-item label="运费:">
-            <el-input v-model="form.o_freight"></el-input>
-          </el-form-item>
-          <el-form-item label="加急费:">
-            <el-input v-model="form.o_urgentFee"></el-input>
-          </el-form-item>
-          <el-form-item label="包装费:">
-            <el-input v-model="form.o_packing"></el-input>
-          </el-form-item>
-          <el-form-item label="保价费:">
-            <el-input v-model="form.o_valuationFee"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="总计:">
-            <el-input v-model="form.c_o_total"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item>
-            <el-input v-model="form.l_o_total"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="重量:">
+                <el-input v-model="form.o_weight"></el-input>
+              </el-form-item>
+              <el-form-item label="体积:">
+                <el-input v-model="form.o_volume"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="内件品名:">
+                <el-input v-model="form.c_o_itemName"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item>
+                <el-input v-model="form.l_o_itemName"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="内件品数量:">
+                <el-input v-model="form.o_itemNumber"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="寄件人证件号:" prop="c_o_sendersId">
+                <el-input v-model="form.c_o_sendersId"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人姓名:" prop="c_o_endName">
+                <el-input v-model="form.c_o_endName"></el-input>
+              </el-form-item>
+              <el-form-item label="目的地:" prop="c_o_destination">
+                <el-input v-model="form.c_o_destination"></el-input>
+              </el-form-item>
+              <el-form-item label="单位名称:">
+                <el-input v-model="form.c_o_endUnitName"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
+                <el-input v-model="form.c_o_endAddress"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
+                <el-input v-model="form.c_o_endPhone"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人证件号:" prop="c_o_recipientId">
+                <el-input v-model="form.c_o_recipientId"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="l_o_sendersId">
+                <el-input v-model="form.l_o_sendersId"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_endName">
+                <el-input v-model="form.l_o_endName"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_destination">
+                <el-input v-model="form.l_o_destination"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="form.l_o_endUnitName"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_endAddress">
+                <el-input v-model="form.l_o_endAddress"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_endPhone">
+                <el-input v-model="form.l_o_endPhone"></el-input>
+              </el-form-item>
+              <el-form-item prop="l_o_recipientId">
+                <el-input v-model="form.l_o_recipientId"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="付款方式:">
+                <el-radio-group v-model="form.o_payment">
+                  <el-radio label="现金"></el-radio>
+                  <el-radio label="到付"></el-radio>
+                  <el-radio label="协议结算"></el-radio>
+                  <el-radio label="保价"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="保价金额:" v-if="form.o_payment==='保价'">
+                <el-input v-model="form.o_amount"></el-input>
+              </el-form-item>
+              <el-form-item label="代收贷款:">
+                <el-input v-model="form.o_cod"></el-input>
+              </el-form-item>
+              <el-form-item label="运费:">
+                <el-input v-model="form.o_freight"></el-input>
+              </el-form-item>
+              <el-form-item label="加急费:">
+                <el-input v-model="form.o_urgentFee"></el-input>
+              </el-form-item>
+              <el-form-item label="包装费:">
+                <el-input v-model="form.o_packing"></el-input>
+              </el-form-item>
+              <el-form-item label="保价费:">
+                <el-input v-model="form.o_valuationFee"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="总计:">
+                <el-input v-model="form.c_o_total"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item>
+                <el-input v-model="form.l_o_total"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
+
+      <el-form-item label="定单号:" style="margin-top: 50px">{{number}}</el-form-item>
       <el-form-item label="状态:" prop="l_log_state">
         <el-select v-model="form.l_log_state" placeholder="请选择状态">
           <el-option label="揽收" value="揽收"></el-option>
@@ -226,6 +233,7 @@
     data() {
       return {
         dialogTableVisible: false,
+        number: '',
         form: {
           o_id: 0,
 

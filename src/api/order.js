@@ -52,3 +52,10 @@ const getAllSiteUrl = 'hdd/getallUser';
 export function getAllSiteApi() {
   return axiosG(getAllSiteUrl)
 }
+
+// 通过单号获取id
+const getIdByOrderUrl = 'hdd/getO_id?l_o_orderNumber=';
+
+export function getIdByOrderApi(data) {
+  return axiosG(getIdByOrderUrl + data)
+}

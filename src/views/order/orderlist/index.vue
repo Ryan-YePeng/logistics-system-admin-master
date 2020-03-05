@@ -245,6 +245,7 @@
       edit(obj) {
         let _this = this.$refs.EditOrder;
         objectEvaluate(obj, _this.form);
+        _this.number = obj.l_o_orderNumber;
         _this.dialogTableVisible = true
       },
       exportExcel() {
