@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import {addNumberApi, getMySiteApi, giveNumberApi, getNumberApi, getHadGivenApi} from '@/api/number'
+  import {addNumberApi, getMySiteApi, giveNumberApi, getNumberApi, getHadGivenApi, getMyNumberApi} from '@/api/number'
   import {validateOneToThirteenNumber} from "@/utils/validate";
 
   export default {
@@ -112,12 +112,18 @@
       this.getMySite();
       this.getNumber();
       this.getHadGiven();
+      this.getMyNumber();
     },
     methods: {
+      getMyNumber() {
+        getMyNumberApi(this.userId).then(result => {
+          console.log('我有的', result)
+        })
+      },
       getHadGiven() {
         let param = `u_id=${this.userId}&role=${this.role}`;
         getHadGivenApi(param).then((res) => {
-          console.log(res)
+          console.log('已经给了', res)
         })
       },
       getMySite() {
@@ -135,12 +141,17 @@
         if (this.authority !== 'level0') return;
         getNumberApi().then(result => { // 获得不可用区间
           this.canNotUsedList = result.data.message;
-          let maxNumber = this.canNotUsedList[this.canNotUsedList.length - 1]['q_end'];
-          maxNumber = maxNumber + '';
-          while (maxNumber.length < 13) {
-            maxNumber = '0' + maxNumber
+          let length = this.canNotUsedList.length;
+          if (length === 0) {
+            this.maxNumber = '0000000000000'
+          } else {
+            let maxNumber = this.canNotUsedList[length - 1]['q_end'];
+            maxNumber = maxNumber + '';
+            while (maxNumber.length < 13) {
+              maxNumber = '0' + maxNumber
+            }
+            this.maxNumber = maxNumber;
           }
-          this.maxNumber = maxNumber;
           this.isImportantLoading = false;
         })
       },
@@ -169,8 +180,10 @@
               this.$errorMsg('该区间存在已被录入过的单号，请换一个区间');
               return
             }
+            data.u_id = this.userId;
             addNumberApi(data).then(() => {
               Object.assign(this.$data.form1, this.$options.data().form1);
+              this.$refs['Form1'].resetFields();
               this.getNumber();
             })
           } else {
@@ -186,7 +199,8 @@
             data.u_id = this.userId;
             data.i = this.role;
             giveNumberApi(data).then(() => {
-              Object.assign(this.$data.form2, this.$options.data().form2)
+              Object.assign(this.$data.form2, this.$options.data().form2);
+              this.$refs['Form2'].resetFields();
             })
           } else {
             return false;
