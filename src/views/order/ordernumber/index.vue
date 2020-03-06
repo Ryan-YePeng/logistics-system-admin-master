@@ -94,9 +94,11 @@
       },
       role() {
         let authority = this.$store.getters.user.authorities[0]['authority'];
-        if (authority === 'level0' || authority === 'level') {
+        if (authority === 'level') {
+          return -1
+        } else if (authority === 'level0') {
           return 0
-        } else if (authority === 'level') {
+        } else if (authority === 'level1') {
           return 1
         } else {
           return 2

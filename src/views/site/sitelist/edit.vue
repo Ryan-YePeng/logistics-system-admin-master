@@ -45,7 +45,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="经理名称(老挝)" prop="l_jili">
-            <el-input v-model="form.l_jili"></el-input>
+            <el-input :disabled="isDisabled" v-model="form.l_jili"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -76,6 +76,7 @@
         dialogTableVisible: false,
         isChangePassword: false,
         obj: {},
+        isDisabled: false,
         form: {
           c__branchesName: '',
           c_br_phone: '',
@@ -107,20 +108,18 @@
     computed: {
       role() {
         return this.$store.getters.user.authorities[0].authority
-      },
-      isDisabled() {
-        if (!isEmpty(this.obj)) {
-          if (this.obj.authorities[0].authority == 'level0') {
-            return false
-          } else {
-            return true
-          }
-        } else {
-          return true
-        }
       }
     },
     methods: {
+      changeIsDisabled() { // 改变禁用状态
+        let objRole = this.obj.authorities[0].authority;
+        if (objRole === this.role && objRole === 'level1') {
+          this.isDisabled = true;
+        } else {
+          this.isDisabled = false;
+        }
+      },
+
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

@@ -87,12 +87,13 @@
       getClassificationApi('pageNumber=1&pageCount=99999').then(result => {
         this.classificationList = result.data.message;
       });
+
     },
     methods: {
       getNews() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s=${this.nameText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&role=-1&s=${this.nameText}`;
         getNewsApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;

@@ -256,6 +256,18 @@
         } else {
           return 2
         }
+      },
+      role() {
+        let authority = this.$store.getters.user.authorities[0]['authority'];
+        if (authority === 'level') {
+          return -1
+        } else if (authority === 'level0') {
+          return 0
+        } else if (authority === 'level1') {
+          return 1
+        } else {
+          return 2
+        }
       }
     },
     mounted() {
@@ -263,7 +275,7 @@
       getAllSiteApi().then(result => { // 获得所有网点
         this.siteList = result.data.message
       });
-      let param = `u_id=${this.userId}&pageNumber=1&pageCount=99999&s=`;
+      let param = `u_id=${this.userId}&role=${this.role}&pageNumber=1&pageCount=99999&s=`;
       getCourierApi(param).then(result => {
         this.courierList = result.data.message
       })

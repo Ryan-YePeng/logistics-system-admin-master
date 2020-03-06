@@ -124,7 +124,7 @@
         if (this.role === 'level0') role = 0;
         if (this.role === 'level1') role = 1;
         if (this.role === 'level2') role = 2;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&role=${this.role}&s=${this.siteText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&role=${role}&s=${this.siteText}`;
         getSiteApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
@@ -138,6 +138,8 @@
         let _this = this.$refs.EditSite;
         obj.password = '';
         objectEvaluate(obj, _this.form);
+        _this.obj = obj;
+        _this.changeIsDisabled();
         _this.dialogTableVisible = true
       },
       deleteSite(id) {
