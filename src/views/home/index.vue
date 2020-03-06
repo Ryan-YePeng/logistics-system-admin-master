@@ -1,7 +1,7 @@
 <template>
   <div ref="home" class="home" :style="'height:' + mainHeight + 'px'" v-show="isShow">
     <div class="container">
-      <h1 class="title minW">物流系统</h1>
+      <h1 class="title minW">老挝韵达快递管理系统</h1>
     </div>
   </div>
 </template>

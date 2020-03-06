@@ -1,11 +1,11 @@
 <template>
-  <div class="login" v-title data-title="登录-物流系统">
+  <div class="login" v-title data-title="登录-老挝韵达快递管理系统">
     <div id="flex-container">
       <section class="container">
         <el-form ref="loginForm" :model="loginUser" :rules="rules" label-position="left" label-width="0px"
                  class="login-form">
           <el-form-item class="divTitle">
-            <h3 class="title">物流系统</h3></el-form-item>
+            <h3 class="title">老挝韵达快递管理系统</h3></el-form-item>
           <el-form-item prop="username">
             <el-input v-model="loginUser.username" type="text" auto-complete="off" placeholder="账号">
               <svg-icon slot="prefix" icon-class="user"></svg-icon>

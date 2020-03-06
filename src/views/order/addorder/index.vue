@@ -59,11 +59,23 @@
             <el-form-item label="重量:">
               <el-input v-model="form.o_weight"></el-input>
             </el-form-item>
-            <el-form-item label="体积:">
+          </el-col>
+        </el-row>
+
+        <div style="margin-left: 140px">
+          <input type="number" min="0" v-model="length" style="width:100px">长(cm) *
+          <input type="number" min="0" v-model="width" style="width:100px">宽(cm) *
+          <input type="number" min="0" v-model="height" style="width:100px">高(cm) / 5000
+        </div>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="体积重量:">
               <el-input v-model="form.o_volume"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="内件品名:">
@@ -103,7 +115,7 @@
             <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
               <el-input v-model="form.c_o_endPhone"></el-input>
             </el-form-item>
-            <el-form-item label="收件人证件号:" prop="c_o_recipientId">
+            <el-form-item label="收件人证件号:">
               <el-input v-model="form.c_o_recipientId"></el-input>
             </el-form-item>
           </el-col>
@@ -173,15 +185,21 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="状态:" prop="l_log_state">
-          <el-select v-model="form.l_log_state" placeholder="请选择状态">
-            <el-option label="揽收" value="揽收"></el-option>
-<!--            <el-option label="出库" value="出库"></el-option>-->
-            <!--            <el-option label="到达" value="到达"></el-option>-->
-            <!--            <el-option label="派送" value="派送"></el-option>-->
-            <!--            <el-option label="签收" value="签收"></el-option>-->
-          </el-select>
-        </el-form-item>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="状态:" prop="c_log_state">
+              <el-select v-model="form.c_log_state" placeholder="请选择状态">
+                <el-option label="揽收" value="揽收">
+                  <span style="float: left">揽收</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">ເກັບ ກຳ</span>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="备注:">
@@ -197,20 +215,28 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="快递员:">
-              <el-select v-model="form.c_log_member" placeholder="请选择快递员">
+              <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
                         v-for="item in courierList"
                         :label="item.c_co_name"
                         :value="item.c_co_name">
+                  <span style="float: left">{{ item.c_co_name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_co_name }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="网点:">
-              <el-select v-model="form.l_log_branches" placeholder="请选择网点">
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="网点:" prop="c_log_branches">
+              <el-select v-model="form.c_log_branches" placeholder="请选择网点" clearable @change="selectSite">
                 <el-option
                         v-for="item in siteList"
                         :label="item.c__branchesName"
                         :value="item.c__branchesName">
+                  <span style="float: left">{{ item.c__branchesName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -225,6 +251,7 @@
 <script>
   import {editOrderApi, getAllSiteApi, getIdByOrderApi} from '@/api/order'
   import {getCourierApi} from "@/api/courier";
+  import {isEmpty} from "@/utils/common";
 
   export default {
     name: "AddOrder",
@@ -244,6 +271,9 @@
         orderId: null,
         siteList: [],
         courierList: [],
+        length: 0,
+        width: 0,
+        height: 0,
         form: {
           o_id: null,
 
@@ -297,13 +327,16 @@
 
           l_o_total: '',
 
-          l_log_state: '揽收', // 状态
+          c_log_state: '揽收', // 状态
+          l_log_state: 'ເກັບ ກຳ', // 状态
 
           c_log_note: '',
           l_log_note: '',
 
           c_log_member: '',
+          l_log_member: '',
 
+          c_log_branches: '',
           l_log_branches: ''
         },
         rules: {
@@ -328,7 +361,6 @@
           c_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
           c_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
           c_o_endPhone: {required: true, message: '请输收件人电话', trigger: 'blur'},
-          c_o_recipientId: {required: true, message: '请输入收件人证件号', trigger: 'blur'},
 
           l_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
           l_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
@@ -336,8 +368,21 @@
           l_o_endAddress: {required: true, message: '请输入联系方式', trigger: 'blur'},
           l_o_endPhone: {required: true, message: '请输入收件人地址', trigger: 'blur'},
           l_o_recipientId: {required: true, message: '请输收件人电话', trigger: 'blur'},
-          l_log_state: {required: true, message: '请选择状态', trigger: 'change'},
+          c_log_state: {required: true, message: '请选择状态', trigger: 'change'},
+          l_log_state: {required: true, message: 'ກະລຸນາເລືອກສະຖານະພາບ', trigger: 'change'},
+          c_log_branches: {required: true, message: '请选择网点', trigger: 'change'},
         }
+      }
+    },
+    watch: {
+      length: function () {
+        this.calculate()
+      },
+      width: function () {
+        this.calculate()
+      },
+      height: function () {
+        this.calculate()
       }
     },
     computed: {
@@ -355,6 +400,47 @@
       })
     },
     methods: {
+      // 计算体积重量
+      calculate() {
+        let length = this.length;
+        let width = this.width;
+        let height = this.height;
+        this.form.o_volume = length * width * height / 5000
+      },
+
+      //  选择快递员
+      selectCourier(name) {
+        if (isEmpty(name)) {
+          this.form.l_log_member = '';
+          return
+        }
+        this.courierList.some(item => {
+          if (item.c_co_name === name) {
+            this.form.l_log_member = item.l_co_name;
+            return true
+          }
+        });
+      },
+
+      // 选择网点
+      selectSite(name) {
+        if (isEmpty(name)) {
+          this.form.l_log_branches = '';
+          this.form.c_o_provenance = '';
+          this.form.l_o_provenance = '';
+          return
+        }
+        this.siteList.some(item => {
+          if (item.c__branchesName === name) {
+            this.form.l_log_branches = item.l_branchesName;
+            this.form.c_o_provenance = item.c_br_address;
+            this.form.l_o_provenance = item.l_br_address;
+            return true
+          }
+        });
+      },
+
+      //  提交表单
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -363,7 +449,6 @@
               data.o_id = this.orderId;
               editOrderApi(data).then(() => {
                 this.cancel();
-                this.$router.push({name: 'orderlist'})
               });
             })
           } else {
@@ -373,6 +458,9 @@
       },
       cancel() {
         Object.assign(this.$data.form, this.$options.data().form);
+        this.length = 0;
+        this.width = 0;
+        this.height = 0;
         this.$refs['Form'].resetFields()
       }
     }

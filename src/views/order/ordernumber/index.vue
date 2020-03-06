@@ -5,7 +5,7 @@
     </div>
     <div>
       <el-form :model="form1" :rules="rules1" ref="Form1" inline label-width="100px" hide-required-asterisk
-               v-if="authority==='level0'">
+               v-if="authority==='level0' || authority==='level'">
         <el-form-item label="单号录入">
           <el-input :disabled="true" v-model="form1.firstNumber"></el-input>
         </el-form-item>
@@ -94,7 +94,7 @@
       },
       role() {
         let authority = this.$store.getters.user.authorities[0]['authority'];
-        if (authority === 'level0') {
+        if (authority === 'level0' || authority === 'level') {
           return 0
         } else if (authority === 'level') {
           return 1

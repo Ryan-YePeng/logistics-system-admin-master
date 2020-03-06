@@ -1,5 +1,5 @@
 <template>
-  <div class="index" ref="index" id="index" v-title data-title="物流系统">
+  <div class="index" ref="index" id="index" v-title data-title="老挝韵达快递管理系统">
     <el-container>
       <LeftMenu :isCollapse="isCollapse" :isSmall="isSmall"></LeftMenu>
       <Drawer :display.sync="isMenuCollapse" :inner="true" :width="'209px'">
@@ -22,6 +22,7 @@
             <el-dropdown trigger="click" style="cursor: pointer">
               <div class="avatar-box">
                 <el-avatar shape="square" :size="45">
+                  <img v-if="level == 'level'" src="../assets/level.jpg" alt="头像"/>
                   <img v-if="level == 'level0'" src="../assets/level0.jpg" alt="头像"/>
                   <img v-if="level == 'level1'" src="../assets/level1.jpg" alt="头像"/>
                   <img v-if="level == 'level2'" src="../assets/level2.jpg" alt="头像"/>

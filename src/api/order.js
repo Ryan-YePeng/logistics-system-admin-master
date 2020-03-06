@@ -14,14 +14,7 @@ export function deleteOrderApi(data) {
   return axiosds(deleteOrderUrl, data)
 }
 
-// 获得订单
-const getOrderUrl = 'hdd/getL_order?';
-
-export function getOrderApi(data) {
-  return axiosG(getOrderUrl + data)
-}
-
-// 搜索订单
+// 搜索全部订单
 const searchOrderUrl = 'hdd/searchL_order?';
 
 export function searchOrderApi(data) {

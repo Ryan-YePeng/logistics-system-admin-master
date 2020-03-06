@@ -72,7 +72,7 @@
                 </el-row>
                 <el-form-item label="快递种类:">{{props.row.o_kinds}}</el-form-item>
                 <el-form-item label="重量:">{{props.row.o_weight}}</el-form-item>
-                <el-form-item label="体积:">{{props.row.o_volume}}</el-form-item>
+                <el-form-item label="体积重量:">{{props.row.o_volume}}</el-form-item>
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="内件品名:">{{props.row.c_o_itemName}}</el-form-item>
@@ -111,23 +111,68 @@
                 <el-form-item label="保价费:">{{props.row.o_valuationFee}}</el-form-item>
                 <el-row>
                   <el-col :span="12">
-                    <el-form-item label="总计:">{{props.row.c_o_total}}</el-form-item>
+                    <el-form-item label="总计:">
+                      {{props.row.c_o_total}}
+                    </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item>{{props.row.l_o_total}}</el-form-item>
+                    <el-form-item>
+                      {{props.row.l_o_total}}
+                    </el-form-item>
                   </el-col>
                 </el-row>
-                <el-form-item label="状态:">{{props.row.l_log_state}}</el-form-item>
+
                 <el-row>
                   <el-col :span="12">
-                    <el-form-item label="备注:">{{props.row.c_log_note}}</el-form-item>
+                    <el-form-item label="状态:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_state}}
+                    </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item>{{props.row.l_log_note}}</el-form-item>
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_state}}
+                    </el-form-item>
                   </el-col>
                 </el-row>
-                <el-form-item label="快递员:">{{props.row.c_log_member}}</el-form-item>
-                <el-form-item label="网点:">{{props.row.l_log_branches}}</el-form-item>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="备注:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_note}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>{{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_note}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="快递员:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_member}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_member}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="网点:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_branches}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_branches}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
               </el-form>
             </template>
           </el-table-column>
@@ -137,7 +182,11 @@
           <el-table-column prop="c_o_endName" label="收件人姓名"></el-table-column>
           <el-table-column prop="c_o_endPhone" label="收件人联系电话"></el-table-column>
           <el-table-column prop="l_o_time" label="录入时间"></el-table-column>
-          <el-table-column prop="l_log_state" label="状态"></el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="scope">
+              <span>{{scope.row.l_logisticsupdate[scope.row.l_logisticsupdate.length-1].c_log_state}}</span>
+            </template>
+          </el-table-column>
 
 
           <el-table-column fixed="right" label="操作" align="center" width="120">
@@ -159,15 +208,15 @@
             </template>
           </el-table-column>
         </el-table>
-        <pagination ref="pagination" @getNewData="getOrder"></pagination>
+        <pagination ref="pagination" @getNewData="searchOrder"></pagination>
       </div>
     </el-card>
-    <edit-order ref="EditOrder" @update="getOrder" :siteList="siteList" :courierList="courierList"></edit-order>
+    <edit-order ref="EditOrder" @update="searchOrder" :siteList="siteList" :courierList="courierList"></edit-order>
   </div>
 </template>
 
 <script>
-  import {getOrderApi, deleteOrderApi, searchOrderApi, exportOrderApi, getAllSiteApi} from '@/api/order'
+  import {deleteOrderApi, searchOrderApi, exportOrderApi, getAllSiteApi} from '@/api/order'
   import {getCourierApi} from '@/api/courier'
   import EditOrder from './edit'
   import pagination from '@/components/pagination'
@@ -200,7 +249,7 @@
       },
       i() {
         let authority = this.$store.getters.user.authorities[0]['authority'];
-        if (authority === 'level0') {
+        if (authority === 'level0' || authority === 'level') {
           return 0
         } else if (authority === 'level1') {
           return 1
@@ -210,7 +259,7 @@
       }
     },
     mounted() {
-      this.getOrder();
+      this.searchOrder();
       getAllSiteApi().then(result => { // 获得所有网点
         this.siteList = result.data.message
       });
@@ -220,32 +269,34 @@
       })
     },
     methods: {
-      // 获得分配到的订单
-      getOrder() {
-        this.isTableLoading = true;
-        let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&i=${this.i}`;
-        getOrderApi(param).then(result => {
-          this.isTableLoading = false;
-          this.formData = result.data.message;
-          pagination.total = result.data.status;
-        })
-      },
       // 搜索全部订单
       searchOrder() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=1&pageCount=999999&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&s4=${this.timeText}&s5=${this.statusText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&s4=${this.timeText}&s5=${this.statusText}`;
         searchOrderApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
-          pagination.total = 0;
+          pagination.total = result.data.status;
         })
       },
       edit(obj) {
         let _this = this.$refs.EditOrder;
         objectEvaluate(obj, _this.form);
         _this.number = obj.l_o_orderNumber;
+
+        let array = obj.l_logisticsupdate;
+        let lastItem = array[array.length - 1];
+
+        _this.form.c_log_state = lastItem.c_log_state;
+        _this.form.l_log_state = lastItem.l_log_state;
+        _this.form.c_log_note = lastItem.c_log_note;
+        _this.form.l_log_note = lastItem.l_log_note;
+        _this.form.c_log_member = lastItem.c_log_member;
+        _this.form.l_log_member = lastItem.l_log_member;
+        _this.form.c_log_branches = lastItem.c_log_branches;
+        _this.form.l_log_branches = lastItem.l_log_branches;
+
         _this.dialogTableVisible = true
       },
       exportExcel() {
@@ -258,7 +309,7 @@
             .then(() => {
               this.isDeleteLoading = false;
               this.$refs[id].doClose();
-              this.getOrder()
+              this.searchOrder()
             })
             .catch(() => {
               this.isDeleteLoading = false;
@@ -274,7 +325,7 @@
       deleteMore() {
         this.$msgBox().then(() => {
           deleteOrderApi(this.deleteList).then(() => {
-            this.getOrder()
+            this.searchOrder()
           })
         })
       },
@@ -284,7 +335,7 @@
         this.phoneText = '';
         this.timeText = '';
         this.statusText = '';
-        this.getOrder();
+        this.searchOrder();
       }
     }
   }

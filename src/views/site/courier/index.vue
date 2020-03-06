@@ -83,6 +83,13 @@
     computed: {
       userId() {
         return this.$store.getters.userId
+      },
+      role() {
+        let role = this.$store.getters.user.authorities[0].authority;
+        if (role === 'level') return -1;
+        else if (role === 'level0') return 0;
+        else if (role === 'level1') return 1;
+        else return 2;
       }
     },
     mounted() {
@@ -92,7 +99,7 @@
       getCourier() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&s=${this.courierText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&role=${this.role}&s=${this.courierText}`;
         getCourierApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;

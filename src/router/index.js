@@ -4,7 +4,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import {isEmpty} from '../utils/common'
 import {getUserApi} from '@/api/person'
-import {menu_level0, menu_level1, menu_level2} from './menu'
+import {menu_level, menu_level0, menu_level1, menu_level2} from './menu'
 
 NProgress.configure({showSpinner: false});
 
@@ -74,7 +74,9 @@ export function getRouter() {
       let user = result.data.message;
       store.dispatch('setUser', user);
       role = user.authorities[0].authority;
-      if (role === 'level0') {
+      if (role === 'level') {
+        menu = menu_level;
+      } else if (role === 'level0') {
         menu = menu_level0;
       } else if (role === 'level1') {
         menu = menu_level1;

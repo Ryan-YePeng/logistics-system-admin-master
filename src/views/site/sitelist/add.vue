@@ -40,9 +40,22 @@
         <el-select v-model="form.i" placeholder="请选择网点级别">
           <el-option v-if="role == 'level1'" label="县级" value="2"></el-option>
           <el-option v-if="role == 'level0'" label="省级" value="1"></el-option>
-          <el-option v-if="role == 'level0'" label="总部" value="0"></el-option>
+          <el-option v-if="role == 'level'" label="总部" value="0"></el-option>
         </el-select>
       </el-form-item>
+
+      <el-row v-if="form.i == '2' || form.i == '1'">
+        <el-col :span="12">
+          <el-form-item label="经理名称" prop="c_jili">
+            <el-input v-model="form.c_jili"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item prop="l_jili">
+            <el-input v-model="form.l_jili"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogTableVisible = false">取 消</el-button>
@@ -69,7 +82,9 @@
           username: '',
           password: '',
           i: '',
-          u_id: 0
+          u_id: 0,
+          c_jili: '',
+          l_jili: ''
         },
         rules: {
           c__branchesName: {required: true, message: '请输入名称', trigger: 'blur'},
@@ -81,6 +96,8 @@
           username: {required: true, message: '请输入账号', trigger: 'blur'},
           password: {required: true, message: '请输入密码', trigger: 'blur'},
           i: {required: true, message: '请选择网点级别', trigger: 'change'},
+          c_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'},
+          l_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'}
         }
       }
     },
@@ -96,8 +113,13 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.form.u_id = this.userId;
-            addSiteApi(this.form).then(() => {
+            let data = {...this.form};
+            if (data.i == 0) {
+              delete data.c_jili;
+              delete data.l_jili
+            }
+            data.u_id = this.userId;
+            addSiteApi(data).then(() => {
               this.$emit('update');
               this.cancel()
             });

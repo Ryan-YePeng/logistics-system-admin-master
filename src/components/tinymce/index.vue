@@ -84,7 +84,7 @@
             data.pic = blobInfo.blob();
             uploadFileApi(data)
                 .then(result => {
-                  let response = result.data.message;
+                  let response = result.data.path;
                   let url = _this.pictureBaseUrl + response;
                   if (result.status === 200) {
                     success(url);

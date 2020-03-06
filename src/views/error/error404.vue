@@ -9,7 +9,7 @@
           <div class="botton-w3ls"><a @click="jump" style="text-decoration: none">返回上一页</a></div>
         </div>
         <div class="footer-w3l">
-          <p class="agileinfo"> &copy; 物流系统</p>
+          <p class="agileinfo"> &copy; 老挝韵达快递管理系统</p>
         </div>
       </div>
     </div>

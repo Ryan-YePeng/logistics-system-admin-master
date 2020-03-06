@@ -37,6 +37,18 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="经理名称(中)" prop="c_jili">
+            <el-input :disabled="isDisabled" v-model="form.c_jili"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="经理名称(老挝)" prop="l_jili">
+            <el-input v-model="form.l_jili"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-button style="margin-left: 30px" @click="isChangePassword=!isChangePassword">重置密码</el-button>
       <el-row v-if="isChangePassword">
         <el-col :span="12">
@@ -55,13 +67,15 @@
 
 <script>
   import {updateSiteApi} from '@/api/site'
+  import {isEmpty} from "@/utils/common";
 
   export default {
-    name: "AddSite",
+    name: "EditSite",
     data() {
       return {
         dialogTableVisible: false,
         isChangePassword: false,
+        obj: {},
         form: {
           c__branchesName: '',
           c_br_phone: '',
@@ -71,7 +85,9 @@
           l_br_address: '',
           username: '',
           password: '',
-          u_id: 0
+          u_id: 0,
+          c_jili: '',
+          l_jili: ''
         },
         rules: {
           c__branchesName: {required: true, message: '请输入名称', trigger: 'blur'},
@@ -83,12 +99,25 @@
           username: {required: true, message: '请输入账号', trigger: 'blur'},
           password: {required: true, message: '请输入密码', trigger: 'blur'},
           i: {required: true, message: '请选择网点级别', trigger: 'change'},
+          c_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'},
+          l_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'}
         }
       }
     },
     computed: {
       role() {
         return this.$store.getters.user.authorities[0].authority
+      },
+      isDisabled() {
+        if (!isEmpty(this.obj)) {
+          if (this.obj.authorities[0].authority == 'level0') {
+            return false
+          } else {
+            return true
+          }
+        } else {
+          return true
+        }
       }
     },
     methods: {

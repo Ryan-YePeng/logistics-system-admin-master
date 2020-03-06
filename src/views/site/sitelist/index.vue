@@ -11,24 +11,18 @@
         <el-button type="success" @click="getSite">搜索</el-button>
         <el-button style="float: right" type="primary" @click="add">新增</el-button>
       </div>
-      <el-button :disabled="isDeleteMoreDisabled" type="danger" @click="deleteMore">批量删除</el-button>
       <div>
         <el-table
                 v-loading="isTableLoading"
-                @selection-change="getSelected"
                 :data="formData">
-          <el-table-column
-                  type="selection"
-                  width="55">
-          </el-table-column>
           <el-table-column
                   prop="c__branchesName"
                   label="网点名称">
           </el-table-column>
-          <el-table-column
-                  prop="username"
-                  label="账号">
-          </el-table-column>
+          <!--          <el-table-column-->
+          <!--                  prop="username"-->
+          <!--                  label="账号">-->
+          <!--          </el-table-column>-->
           <el-table-column
                   prop="c_br_phone"
                   label="联系方式">
@@ -37,9 +31,23 @@
                   prop="c_br_address"
                   label="地址">
           </el-table-column>
+          <el-table-column
+                  prop="c_jili"
+                  label="经理">
+          </el-table-column>
+          <el-table-column label="权限">
+            <template slot-scope="scope">
+              <span v-if="scope.row.authorities[0].authority == 'level'">超管</span>
+              <span v-if="scope.row.authorities[0].authority == 'level0'">总部</span>
+              <span v-if="scope.row.authorities[0].authority == 'level1'">省</span>
+              <span v-if="scope.row.authorities[0].authority == 'level2'">县</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
+              <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)"
+                         size="mini" v-if="!isDisabled(scope.row)">
+              </el-button>
               <el-popover
                       :ref="scope.row.u_id"
                       placement="top"
@@ -51,7 +59,8 @@
                              @click.stop="deleteSite(scope.row.u_id)">确定
                   </el-button>
                 </div>
-                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop/>
+                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop
+                           v-if="!isDisabled(scope.row)"></el-button>
               </el-popover>
             </template>
           </el-table-column>
@@ -87,16 +96,35 @@
     computed: {
       userId() {
         return this.$store.getters.userId
+      },
+      role() {
+        return this.$store.getters.user.authorities[0].authority
       }
     },
     mounted() {
       this.getSite();
     },
     methods: {
+      isDisabled(obj) {
+        let role = this.role;
+        let objRole = obj.authorities[0].authority;
+        if (role === 'level') {
+          return false;
+        } else if (role === 'level0') {
+          return objRole === 'level';
+        } else if (role === 'level1') {
+          return objRole === 'level' || objRole === 'level0';
+        }
+      },
       getSite() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&s=${this.siteText}`;
+        let role;
+        if (this.role === 'level') role = -1;
+        if (this.role === 'level0') role = 0;
+        if (this.role === 'level1') role = 1;
+        if (this.role === 'level2') role = 2;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&u_id=${this.userId}&role=${this.role}&s=${this.siteText}`;
         getSiteApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
@@ -130,13 +158,6 @@
           return item.l_co_id
         });
         this.isDeleteMoreDisabled = array.length === 0;
-      },
-      deleteMore() {
-        this.$msgBox().then(() => {
-          deleteSiteApi(this.deleteList).then(() => {
-            this.getSite()
-          })
-        })
       }
     }
   }

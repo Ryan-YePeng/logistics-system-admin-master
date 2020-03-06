@@ -6,6 +6,7 @@
       </div>
       <div style="text-align: center; margin-bottom: 20px">
         <el-avatar shape="circle" :size="120">
+          <img v-if="level == 'level'" src="../../assets/level.jpg" alt="头像"/>
           <img v-if="level == 'level0'" src="../../assets/level0.jpg" alt="头像"/>
           <img v-if="level == 'level1'" src="../../assets/level1.jpg" alt="头像"/>
           <img v-if="level == 'level2'" src="../../assets/level2.jpg" alt="头像"/>
@@ -18,6 +19,7 @@
         </li>
         <li>
           <span>级别</span>
+          <span v-if="level == 'level'">超管</span>
           <span v-if="level == 'level0'">总部</span>
           <span v-if="level == 'level1'">省级</span>
           <span v-if="level == 'level2'">县级</span>
