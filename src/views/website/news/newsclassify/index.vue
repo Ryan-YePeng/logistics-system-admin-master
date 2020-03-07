@@ -11,12 +11,11 @@
                 :data="formData">
           <el-table-column
                   prop="c_nC_name"
-                  label="名称">
+                  label="名称(中文)">
           </el-table-column>
-          <el-table-column label="创建时间">
-            <template slot-scope="scope">
-              <span>{{scope.row.l_nC_time | formatDateTime}}</span>
-            </template>
+          <el-table-column
+                  prop="l_nC_name"
+                  label="名称(老挝)">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">

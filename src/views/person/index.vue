@@ -48,23 +48,23 @@
           <span>地址(老挝)</span>
           <span>{{user.l_br_address}}</span>
         </li>
-        <!--        <li>-->
-        <!--          <span>安全设置</span>-->
-        <!--          <span>-->
-        <!--            <a style="color: #317ef3; cursor: pointer" @click="changePassword">修改密码</a>-->
-        <!--          </span>-->
-        <!--        </li>-->
+        <li>
+          <span>安全设置</span>
+          <span>
+            <a style="color: #317ef3; cursor: pointer" @click="changePassword">修改密码</a>
+          </span>
+        </li>
       </ul>
     </el-card>
-    <!--    <PasswordDialog ref="passwordDialogForm"></PasswordDialog>-->
+    <password-dialog ref="passwordDialogForm"></password-dialog>
   </div>
 </template>
 
 <script>
-  // import PasswordDialog from './passwordDialog'
+  import PasswordDialog from './passwordDialog'
 
   export default {
-    // components: {PasswordDialog},
+    components: {PasswordDialog},
     name: 'person',
     data() {
       return {

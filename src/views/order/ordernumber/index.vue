@@ -111,7 +111,7 @@
       canGiveList() {
         let list = this.canGiveSection;
         if (list.length === 0) {
-          return '无可用单号'
+          return '暂无'
         } else {
           let str = '';
           list.forEach(item => {

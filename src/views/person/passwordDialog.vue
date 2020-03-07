@@ -6,17 +6,20 @@
           append-to-body
           @close="cancel"
           :close-on-click-modal="false">
-    <el-form :model="passwordForm" :rules="rules" ref="passwordForm" label-width="120px">
-      <el-form-item label="新密码:" prop="password">
-        <el-input type="password" v-model="passwordForm.password" autocomplete="off"></el-input>
+    <el-form :model="form" :rules="rules" ref="form" label-width="120px" hide-required-asterisk>
+      <el-form-item label="旧密码:" prop="oldPassword">
+        <el-input type="password" v-model="form.oldPassword" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="新密码:" prop="newPassword">
+        <el-input type="password" v-model="form.newPassword" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="确认密码:" prop="checkPassword">
-        <el-input type="password" v-model="passwordForm.checkPassword" autocomplete="off"></el-input>
+        <el-input type="password" v-model="form.checkPassword" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="submitPasswordForm('passwordForm')" :loading="isLoading">确 定</el-button>
+      <el-button type="primary" @click="submitPasswordForm('form')" :loading="isLoading">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -29,7 +32,7 @@
       let validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入新密码'))
-        } else if (value !== this.passwordForm.password) {
+        } else if (value !== this.form.newPassword) {
           callback(new Error('两次输入密码不一致!'))
         } else {
           callback()
@@ -38,14 +41,21 @@
       return {
         isLoading: false,
         passwordDialogVisible: false,
-        passwordForm: {
-          password: '',
+        form: {
+          oldPassword: '',
+          newPassword: '',
           checkPassword: ''
         },
         rules: {
-          password: {required: true, message: '请输入旧密码', trigger: 'blur'},
+          oldPassword: {required: true, message: '请输入旧密码', trigger: 'blur'},
+          newPassword: {required: true, message: '请输入新密码', trigger: 'blur'},
           checkPassword: {required: true, validator: validatePass, trigger: 'blur'}
         }
+      }
+    },
+    computed: {
+      userId() {
+        return this.$store.getters.userId;
       }
     },
     methods: {
@@ -55,15 +65,20 @@
           if (valid) {
             this.isLoading = true;
             let data = {
-              password: this.passwordForm.password
+              oldPassword: this.form.oldPassword,
+              newPassword: this.form.newPassword
             };
+            data.u_id = this.userId;
             updatePasswordApi(data).then(result => {
-              this.isLoading = false;
-              this.$successMsg('请重新登录！');
-              this.$removeCookiesStorage('logisticsAdminMasterToken');
-              this.$removeSessionStorage('logisticsAdminMasterLayout');
-              this.$router.push({name: 'login'});
-              location.reload()
+              if (result.data.status === 200) {
+                this.isLoading = false;
+                this.$removeCookiesStorage('logisticsAdminMasterToken');
+                this.$removeSessionStorage('logisticsAdminMasterLayout');
+                this.$router.push({name: 'login'});
+                location.reload()
+              } else {
+                this.isLoading = false
+              }
             }).catch(() => {
               this.isLoading = false
             })
@@ -79,9 +94,9 @@
       // 重置表单
       resetForm() {
         this.passwordDialogVisible = false;
-        this.$refs['passwordForm'].resetFields();
-        for (let key in this.passwordForm) {
-          this.passwordForm[key] = ''
+        this.$refs['form'].resetFields();
+        for (let key in this.form) {
+          this.form[key] = ''
         }
       }
     }

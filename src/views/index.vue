@@ -43,7 +43,11 @@
         </div>
         <el-main class="top" id="top" style="overflow-x: hidden">
           <transition name="xz-animation">
-            <router-view v-if="isRouterAlive"></router-view>
+            <keep-alive
+                    v-if="isRouterAlive"
+                    include="Order,Courier,Site,Announcement,Help,Classification,News">
+              <router-view></router-view>
+            </keep-alive>
           </transition>
           <div class="back-top">
             <el-button type="primary" icon="el-icon-top" circle class="to-top" @click="backTop" v-show="isShowBackTop"/>
