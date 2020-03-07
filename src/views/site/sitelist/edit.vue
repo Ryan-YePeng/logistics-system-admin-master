@@ -111,7 +111,6 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let data = {...this.form};
-            if (!this.isChangePassword) delete data.password;
             updateSiteApi(data).then(() => {
               this.$emit('update');
               this.cancel()

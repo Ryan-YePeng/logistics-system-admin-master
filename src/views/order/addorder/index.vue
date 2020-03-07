@@ -245,7 +245,9 @@
           </el-col>
         </el-row>
       </el-form>
-      <el-button style="float: right;margin-bottom: 10px" type="primary" @click="submitForm('Form')">提 交</el-button>
+      <el-button :loading="isSubmitLoading" style="float: right;margin-bottom: 10px" type="primary"
+                 @click="submitForm('Form')">提 交
+      </el-button>
     </div>
   </el-card>
 </template>
@@ -273,6 +275,7 @@
         orderId: null,
         siteList: [],
         courierList: [],
+        isSubmitLoading: false,
         length: 0,
         width: 0,
         height: 0,

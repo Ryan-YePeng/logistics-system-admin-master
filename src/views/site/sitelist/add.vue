@@ -63,7 +63,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogTableVisible = false">取 消</el-button>
-      <el-button type="primary" @click="submitForm('Form')">确 定</el-button>
+      <el-button :loading="isSubmitLoading" type="primary" @click="submitForm('Form')">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -76,6 +76,7 @@
     data() {
       return {
         dialogTableVisible: false,
+        isSubmitLoading: false,
         form: {
           c__branchesName: '',
           c_br_phone: '',
@@ -117,11 +118,13 @@
           if (valid) {
             let data = {...this.form};
             data.u_id = this.userId;
-            console.log(data)
-            return
+            this.isSubmitLoading = true;
             addSiteApi(data).then(() => {
+              this.isSubmitLoading = false;
               this.$emit('update');
               this.cancel()
+            }).catch(() => {
+              this.isSubmitLoading = false;
             });
           } else {
             return false;
