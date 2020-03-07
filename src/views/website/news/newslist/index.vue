@@ -23,10 +23,12 @@
           </el-table-column>
           <el-table-column
                   prop="c_n_name"
+                  show-overflow-tooltip
                   label="标题(中文)">
           </el-table-column>
           <el-table-column
                   prop="l_n_name"
+                  show-overflow-tooltip
                   label="标题(老挝)">
           </el-table-column>
           <el-table-column label="操作" align="center">
@@ -93,7 +95,7 @@
       getNews() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&role=-1&s=${this.nameText}`;
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s=${this.nameText}`;
         getNewsApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;

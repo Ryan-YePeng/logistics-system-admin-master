@@ -35,7 +35,7 @@
                   prop="c_jili"
                   label="经理">
           </el-table-column>
-          <el-table-column label="权限">
+          <el-table-column label="级别">
             <template slot-scope="scope">
               <span v-if="scope.row.authorities[0].authority == 'level'">超管</span>
               <span v-if="scope.row.authorities[0].authority == 'level0'">总部</span>
@@ -138,8 +138,6 @@
         let _this = this.$refs.EditSite;
         obj.password = '';
         objectEvaluate(obj, _this.form);
-        _this.obj = obj;
-        _this.changeIsDisabled();
         _this.dialogTableVisible = true
       },
       deleteSite(id) {

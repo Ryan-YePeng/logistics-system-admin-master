@@ -9,7 +9,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="网点账号" prop="username">
-            <el-input :disabled="true" v-model="form.username"></el-input>
+            {{form.username}}
           </el-form-item>
         </el-col>
       </el-row>
@@ -39,13 +39,13 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="经理名称(中)" prop="c_jili">
-            <el-input :disabled="isDisabled" v-model="form.c_jili"></el-input>
+          <el-form-item label="经理名称(中)">
+            <el-input v-model="form.c_jili"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="经理名称(老挝)" prop="l_jili">
-            <el-input :disabled="isDisabled" v-model="form.l_jili"></el-input>
+          <el-form-item label="经理名称(老挝)">
+            <el-input v-model="form.l_jili"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -75,8 +75,6 @@
       return {
         dialogTableVisible: false,
         isChangePassword: false,
-        obj: {},
-        isDisabled: false,
         form: {
           c__branchesName: '',
           c_br_phone: '',
@@ -99,9 +97,7 @@
           l_br_address: {required: true, message: '请输入地址', trigger: 'blur'},
           username: {required: true, message: '请输入账号', trigger: 'blur'},
           password: {required: true, message: '请输入密码', trigger: 'blur'},
-          i: {required: true, message: '请选择网点级别', trigger: 'change'},
-          c_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'},
-          l_jili: {required: true, message: '请选择输入经理名称', trigger: 'blur'}
+          i: {required: true, message: '请选择网点级别', trigger: 'change'}
         }
       }
     },
@@ -111,15 +107,6 @@
       }
     },
     methods: {
-      changeIsDisabled() { // 改变禁用状态
-        let objRole = this.obj.authorities[0].authority;
-        if (objRole === this.role && objRole === 'level1') {
-          this.isDisabled = true;
-        } else {
-          this.isDisabled = false;
-        }
-      },
-
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

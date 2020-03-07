@@ -23,10 +23,12 @@
           </el-table-column>
           <el-table-column
                   prop="c_an_name"
+                  show-overflow-tooltip
                   label="标题(中文)">
           </el-table-column>
           <el-table-column
                   prop="l_an_name"
+                  show-overflow-tooltip
                   label="标题(老挝)">
           </el-table-column>
           <el-table-column label="操作" align="center">

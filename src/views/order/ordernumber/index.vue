@@ -17,7 +17,8 @@
         </el-form-item>
       </el-form>
 
-      <el-form :model="form2" :rules="rules2" ref="Form2" inline label-width="100px" hide-required-asterisk>
+      <el-form :model="form2" :rules="rules2" ref="Form2" inline label-width="100px" hide-required-asterisk
+               v-if="authority !=='level2'">
         <el-form-item label="订单分配">
           <el-input :disabled="true" v-model="form2.firstNumber"></el-input>
         </el-form-item>
@@ -131,10 +132,16 @@
     mounted() {
       this.getMySite();
       this.getNumber();
-      this.getCanGiveSection()
+      this.getCanGiveSection();
+      if (this.authority === 'level2') {
+        getMyNumberApi(this.userId).then(result => {
+          this.canGiveSection = result.data.message;
+        })
+      }
     },
     methods: {
-      getCanGiveSection() {
+      getCanGiveSection() { // 获得可分配单号
+        if (this.authority === 'level2') return;
         let haveSection = [];
         let hadGivenSection = [];
         this.canGiveSection = [];
@@ -226,6 +233,7 @@
       },
       // 获得下级网点
       getMySite() {
+        if (this.authority === 'level2') return;
         let param = `pageNumber=1&pageCount=99999&u_id=${this.userId}&role=${this.role}`;
         getMySiteApi(param).then(result => {
           let data = result.data.message;
@@ -238,7 +246,7 @@
       },
       // 获得开始单号
       getNumber() {
-        if (this.authority !== 'level0') return;
+        if (this.authority !== 'level' && this.authority !== 'level0') return;
         getNumberApi().then(result => { // 获得不可用区间
           this.canNotUsedList = result.data.message;
           let length = this.canNotUsedList.length;

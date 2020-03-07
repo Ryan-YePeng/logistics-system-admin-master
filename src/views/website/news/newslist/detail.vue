@@ -143,7 +143,7 @@
 
     .tinymce-footer {
       text-align: right;
-      margin: 20px 10px 10px 0;
+      padding: 10px 10px 10px 0;
     }
   }
 </style>

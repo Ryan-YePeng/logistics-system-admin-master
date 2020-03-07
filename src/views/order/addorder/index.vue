@@ -231,13 +231,15 @@
           <el-col :span="12">
             <el-form-item label="网点:" prop="c_log_branches">
               <el-select v-model="form.c_log_branches" placeholder="请选择网点" clearable @change="selectSite">
-                <el-option
-                        v-for="item in siteList"
-                        :label="item.c__branchesName"
-                        :value="item.c__branchesName">
-                  <span style="float: left">{{ item.c__branchesName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
-                </el-option>
+                <template v-for="item in siteList">
+                  <el-option
+                          v-if="item.username!='8560000' && item.username!='8560001'"
+                          :label="item.c__branchesName"
+                          :value="item.c__branchesName">
+                    <span style="float: left">{{ item.c__branchesName }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
+                  </el-option>
+                </template>
               </el-select>
             </el-form-item>
           </el-col>

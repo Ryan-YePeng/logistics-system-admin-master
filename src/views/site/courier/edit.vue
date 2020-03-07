@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-          title="新增快递员"
+          title="编辑快递员"
           width="800px"
           @close="cancel"
           :close-on-click-modal="false"
