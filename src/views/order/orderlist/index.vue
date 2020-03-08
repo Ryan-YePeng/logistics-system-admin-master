@@ -4,25 +4,25 @@
       <div slot="header" class="clearfix">
         <el-input placeholder="订单号"
                   v-model="orderText"
-                  style="width: 150px"
+                  style="width: 170px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
         <el-input placeholder="姓名"
                   v-model="nameText"
-                  style="width: 120px"
+                  style="width: 140px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
-        <el-input placeholder="电话"
+        <el-input placeholder="联系电话"
                   v-model="phoneText"
-                  style="width: 120px"
+                  style="width: 130px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
-        <el-input placeholder="时间"
+        <el-input placeholder="录入时间"
                   v-model="timeText"
-                  style="width: 150px"
+                  style="width: 180px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
@@ -39,7 +39,7 @@
           <el-option label="签收" value="签收"></el-option>
         </el-select>
         <el-button type="success" @click="searchOrder">搜索全部</el-button>
-        <el-button type="warning" @click="clearAll">清空</el-button>
+        <el-button type="warning" @click="clearAll">复原</el-button>
       </div>
       <el-button :disabled="isDeleteMoreDisabled" type="danger" @click="deleteMore">批量删除</el-button>
       <el-button type="success" @click="exportExcel">导出</el-button>
@@ -50,29 +50,79 @@
                 @selection-change="getSelected"
                 :data="formData">
           <el-table-column type="selection" width="45"></el-table-column>
+
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="demo-table-expand" label-width="200px" size="mini">
-                <el-form-item label="订单号:">{{props.row.l_o_orderNumber}}</el-form-item>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="订单号:">{{props.row.l_o_orderNumber}}</el-form-item>
+                  </el-col>
+                </el-row>
+
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="寄件人姓名:">{{props.row.c_o_startName}}</el-form-item>
-                    <el-form-item label="始发地:">{{props.row.c_o_provenance}}</el-form-item>
-                    <el-form-item label="单位名称:">{{props.row.c_o_startUnitName}}</el-form-item>
-                    <el-form-item label="寄件人详细地址:">{{props.row.c_o_startAddress}}</el-form-item>
-                    <el-form-item label="联系电话:">{{props.row.c_o_startPhone}}</el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item>{{props.row.l_o_startName}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="始发地:">{{props.row.c_o_provenance}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_provenance}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="单位名称:">{{props.row.c_o_startUnitName}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_startUnitName}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="寄件人详细地址:">{{props.row.c_o_startAddress}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_startAddress}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="联系电话:">{{props.row.c_o_startPhone}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_startPhone}}</el-form-item>
                   </el-col>
                 </el-row>
-                <el-form-item label="快递种类:">{{props.row.o_kinds}}</el-form-item>
-                <el-form-item label="重量:">{{props.row.o_weight}}</el-form-item>
-                <el-form-item label="体积重量:">{{props.row.o_volume}}</el-form-item>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="快递种类:">{{props.row.o_kinds}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="重量:">{{props.row.o_weight}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="体积重量:">{{props.row.o_volume}}</el-form-item>
+                  </el-col>
+                </el-row>
+
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="内件品名:">{{props.row.c_o_itemName}}</el-form-item>
@@ -81,34 +131,118 @@
                     <el-form-item>{{props.row.l_o_itemName}}</el-form-item>
                   </el-col>
                 </el-row>
-                <el-form-item label="内件品数量:">{{props.row.o_itemNumber}}</el-form-item>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="内件品数量:">{{props.row.o_itemNumber}}</el-form-item>
+                  </el-col>
+                </el-row>
+
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="寄件人证件号:">{{props.row.c_o_sendersId}}</el-form-item>
-                    <el-form-item label="收件人姓名:">{{props.row.c_o_endName}}</el-form-item>
-                    <el-form-item label="目的地:">{{props.row.c_o_destination}}</el-form-item>
-                    <el-form-item label="单位名称:">{{props.row.c_o_endUnitName}}</el-form-item>
-                    <el-form-item label="收件人详细地址:">{{props.row.c_o_endAddress}}</el-form-item>
-                    <el-form-item label="收件人联系电话:">{{props.row.c_o_endPhone}}</el-form-item>
-                    <el-form-item label="收件人证件号:">{{props.row.c_o_recipientId}}</el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item>{{props.row.l_o_sendersId}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="收件人姓名:">{{props.row.c_o_endName}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_endName}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="目的地:">{{props.row.c_o_destination}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_destination}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="单位名称:">{{props.row.c_o_endUnitName}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_endUnitName}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="收件人详细地址:">{{props.row.c_o_endAddress}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_endAddress}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="收件人联系电话:">{{props.row.c_o_endPhone}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_endPhone}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="收件人证件号:">{{props.row.c_o_recipientId}}</el-form-item>
+                  </el-col>
+                  <el-col :span="12">
                     <el-form-item>{{props.row.l_o_recipientId}}</el-form-item>
                   </el-col>
                 </el-row>
-                <el-form-item label="付款方式:">{{props.row.o_payment}}</el-form-item>
-                <el-form-item label="保价金额:">{{props.row.o_amount}}</el-form-item>
-                <el-form-item label="代收贷款:">{{props.row.o_cod}}</el-form-item>
-                <el-form-item label="运费:">{{props.row.o_freight}}</el-form-item>
-                <el-form-item label="加急费:">{{props.row.o_urgentFee}}</el-form-item>
-                <el-form-item label="包装费:">{{props.row.o_packing}}</el-form-item>
-                <el-form-item label="保价费:">{{props.row.o_valuationFee}}</el-form-item>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="付款方式:">{{props.row.o_payment}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="保价金额:">{{props.row.o_amount}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="代收贷款:">{{props.row.o_cod}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="运费:">{{props.row.o_freight}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="加急费:">{{props.row.o_urgentFee}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="包装费:">{{props.row.o_packing}}</el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="保价费:">{{props.row.o_valuationFee}}</el-form-item>
+                  </el-col>
+                </el-row>
+
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="总计:">
@@ -176,19 +310,18 @@
               </el-form>
             </template>
           </el-table-column>
+
           <el-table-column prop="l_o_orderNumber" label="订单号" width="120"></el-table-column>
           <el-table-column prop="c_o_startName" label="寄件人姓名"></el-table-column>
           <el-table-column prop="c_o_startPhone" label="寄件人联系电话"></el-table-column>
           <el-table-column prop="c_o_endName" label="收件人姓名"></el-table-column>
           <el-table-column prop="c_o_endPhone" label="收件人联系电话"></el-table-column>
-          <el-table-column prop="l_o_time" label="录入时间"></el-table-column>
+          <el-table-column prop="l_o_time" label="录入时间" show-overflow-tooltip></el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
               <span>{{scope.row.l_logisticsupdate[scope.row.l_logisticsupdate.length-1].c_log_state}}</span>
             </template>
           </el-table-column>
-
-
           <el-table-column fixed="right" label="操作" align="center" width="120">
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
@@ -349,10 +482,18 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   #order {
     .el-form-item--mini.el-form-item {
       margin-bottom: 2px !important;
+    }
+
+    .el-row {
+      padding: 0 3px 0 3px;
+    }
+
+    .el-row:nth-child(2n-1) {
+      background: rgb(243, 243, 243);
     }
   }
 </style>

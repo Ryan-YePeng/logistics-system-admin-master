@@ -58,7 +58,9 @@
                              @click.stop="deleteSite(scope.row.u_id)">确定
                   </el-button>
                 </div>
-                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop></el-button>
+                <el-button :disabled="isDisabled(scope.row)" slot="reference" type="danger" icon="el-icon-delete"
+                           size="mini"
+                           @click.stop></el-button>
               </el-popover>
             </template>
           </el-table-column>
@@ -103,17 +105,10 @@
       this.getSite();
     },
     methods: {
-      // isDisabled(obj) {
-      //   let role = this.role;
-      //   let objRole = obj.authorities[0].authority;
-      //   if (role === 'level') {
-      //     return false;
-      //   } else if (role === 'level0') {
-      //     return objRole === 'level';
-      //   } else if (role === 'level1') {
-      //     return objRole === 'level' || objRole === 'level0';
-      //   }
-      // },
+      isDisabled(obj) {
+        let objRole = obj.authorities[0].authority;
+        return objRole === 'level';
+      },
       getSite() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
