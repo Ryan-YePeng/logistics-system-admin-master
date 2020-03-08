@@ -29,6 +29,7 @@
           <el-select v-model="form2.to_id" placeholder="请选择网点">
             <el-option
                     v-for="item in siteList"
+                    :key="item.u_id"
                     :label="item.c__branchesName"
                     :value="item.u_id">
             </el-option>

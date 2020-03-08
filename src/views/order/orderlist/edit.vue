@@ -179,6 +179,7 @@
           <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
             <el-option
                     v-for="item in option"
+                    :key="item.c_log_state"
                     :label="item.c_log_state"
                     :value="item.c_log_state">
               <span style="float: left">{{ item.c_log_state }}</span>
@@ -204,6 +205,7 @@
               <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
                         v-for="item in courierList"
+                        :key="item.l_co_id"
                         :label="item.c_co_name"
                         :value="item.c_co_name">
                   <span style="float: left">{{ item.c_co_name }}</span>
@@ -216,16 +218,23 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="网点:" prop="c_log_branches">
-              <el-select v-model="form.c_log_branches" placeholder="请选择网点" clearable @change="selectSite">
-                <template v-for="item in siteList">
-                  <el-option
-                          v-if="item.username!='8560000' && item.username!='8560001'"
-                          :label="item.c__branchesName"
-                          :value="item.c__branchesName">
-                    <span style="float: left">{{ item.c__branchesName }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
-                  </el-option>
-                </template>
+              <el-select
+                      v-model="form.c_log_branches"
+                      placeholder="请输入网点名称"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :remote-method="remoteMethod"
+                      :loading="searchLoading"
+                      @change="siteNameSelected">
+                <el-option
+                        v-for="item in siteNameOptions"
+                        :key="item.label"
+                        :label="item.label"
+                        :value="item.value">
+                  <span style="float: left">{{ item.c__branchesName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -242,6 +251,7 @@
 <script>
   import {editOrderApi} from '@/api/order'
   import {isEmpty} from "@/utils/common";
+  import {searchSiteApi} from "@/api/site";
 
   export default {
     name: "EditOrder",
@@ -336,23 +346,25 @@
           c_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
           c_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
           c_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
-          c_o_endPhone: {required: true, message: '请输收件人电话', trigger: 'blur'},
+          c_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
 
           l_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
           l_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
           l_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
-          l_o_endAddress: {required: true, message: '请输入联系方式', trigger: 'blur'},
-          l_o_endPhone: {required: true, message: '请输入收件人地址', trigger: 'blur'},
-          l_o_recipientId: {required: true, message: '请输收件人电话', trigger: 'blur'},
+          l_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
+          l_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
+
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'},
-        }
+          c_log_branches: {required: true, message: '请选择网点', trigger: 'change'},
+        },
+
+        /* 模糊搜索 */
+        searchLoading: false,
+        siteNameOptions: [],
+        /* 模糊搜索 */
       }
     },
     props: {
-      siteList: {
-        type: Array,
-        default: () => []
-      },
       courierList: {
         type: Array,
         default: () => []
@@ -364,6 +376,50 @@
       }
     },
     methods: {
+      /* 模糊搜索网点 */
+      siteNameSelected() {
+        let name = this.form.c_log_branches;
+        setTimeout(() => {
+          if (isEmpty(this.form.c_log_branches)) {
+            this.form.l_log_branches = '';
+            return
+          }
+          this.siteNameOptions.some(item => {
+            if (item.c__branchesName === name) {
+              this.form.l_log_branches = item.l_branchesName;
+              return true
+            }
+          });
+        }, 100)
+      },
+      remoteMethod(query) {
+        if (query !== '') {
+          this.searchLoading = true;
+          searchSiteApi(query).then(result => {
+            this.searchLoading = false;
+            let siteNameOptionsData = [];
+            let response = result.data.message;
+            for (let i = 0; i < response.length; i++) {
+              siteNameOptionsData.push({
+                value: response[i].c__branchesName,
+                label: response[i].c__branchesName,
+                c__branchesName: response[i].c__branchesName,
+                l_branchesName: response[i].l_branchesName,
+                c_br_address: response[i].c_br_address,
+                l_br_address: response[i].l_br_address,
+                key: response[i].u_id
+              })
+            }
+            this.siteNameOptions = siteNameOptionsData;
+          }).catch(() => {
+            this.searchLoading = false;
+          })
+        } else {
+          this.siteNameOptions = [];
+        }
+      },
+      /* 模糊搜索网点 */
+
       // 选择状态
       selectState(name) {
         this.option.some(item => {
@@ -373,23 +429,6 @@
             return true
           }
         })
-      },
-      // 选择网点
-      selectSite(name) {
-        if (isEmpty(name)) {
-          this.form.l_log_branches = '';
-          this.form.c_o_provenance = '';
-          this.form.l_o_provenance = '';
-          return
-        }
-        this.siteList.some(item => {
-          if (item.c__branchesName === name) {
-            this.form.l_log_branches = item.l_branchesName;
-            this.form.c_o_provenance = item.c_br_address;
-            this.form.l_o_provenance = item.l_br_address;
-            return true
-          }
-        });
       },
 
       //  选择快递员

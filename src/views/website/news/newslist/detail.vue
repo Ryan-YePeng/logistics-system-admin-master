@@ -10,6 +10,7 @@
           <el-form-item label="分类(中文)" prop="l_nC_id">
             <el-select v-model="form.l_nC_id" placeholder="请选择分类">
               <el-option v-for="item in classificationList"
+                         :key="item.l_nC_id"
                          :label="item.c_nC_name"
                          :value="item.l_nC_id">
               </el-option>
@@ -23,6 +24,7 @@
           <el-form-item label="分类(老挝)" prop="l_nC_id">
             <el-select v-model="form.l_nC_id" placeholder="请选择分类">
               <el-option v-for="item in classificationList"
+                         :key="item.l_nC_id"
                          :label="item.l_nC_name"
                          :value="item.l_nC_id">
               </el-option>

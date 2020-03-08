@@ -45,8 +45,7 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)"
-                         size="mini" v-if="!isDisabled(scope.row)">
+              <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini">
               </el-button>
               <el-popover
                       :ref="scope.row.u_id"
@@ -59,8 +58,7 @@
                              @click.stop="deleteSite(scope.row.u_id)">确定
                   </el-button>
                 </div>
-                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop
-                           v-if="!isDisabled(scope.row)"></el-button>
+                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop></el-button>
               </el-popover>
             </template>
           </el-table-column>
@@ -105,17 +103,17 @@
       this.getSite();
     },
     methods: {
-      isDisabled(obj) {
-        let role = this.role;
-        let objRole = obj.authorities[0].authority;
-        if (role === 'level') {
-          return false;
-        } else if (role === 'level0') {
-          return objRole === 'level';
-        } else if (role === 'level1') {
-          return objRole === 'level' || objRole === 'level0';
-        }
-      },
+      // isDisabled(obj) {
+      //   let role = this.role;
+      //   let objRole = obj.authorities[0].authority;
+      //   if (role === 'level') {
+      //     return false;
+      //   } else if (role === 'level0') {
+      //     return objRole === 'level';
+      //   } else if (role === 'level1') {
+      //     return objRole === 'level' || objRole === 'level0';
+      //   }
+      // },
       getSite() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;

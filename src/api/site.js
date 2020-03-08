@@ -27,3 +27,10 @@ const getSiteUrl = 'hdd/getUsers?';
 export function getSiteApi(data) {
   return axiosG(getSiteUrl + data)
 }
+
+// 模糊查找所有网点
+const searchSiteUrl = 'hdd/gettheall?s=';
+
+export function searchSiteApi(data) {
+  return axiosG(searchSiteUrl + data)
+}

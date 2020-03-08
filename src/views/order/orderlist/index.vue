@@ -211,12 +211,12 @@
         <pagination ref="pagination" @getNewData="searchOrder"></pagination>
       </div>
     </el-card>
-    <edit-order ref="EditOrder" @update="searchOrder" :siteList="siteList" :courierList="courierList"></edit-order>
+    <edit-order ref="EditOrder" @update="searchOrder" :courierList="courierList"></edit-order>
   </div>
 </template>
 
 <script>
-  import {deleteOrderApi, searchOrderApi, exportOrderApi, getAllSiteApi} from '@/api/order'
+  import {deleteOrderApi, searchOrderApi, exportOrderApi} from '@/api/order'
   import {getCourierApi} from '@/api/courier'
   import EditOrder from './edit'
   import pagination from '@/components/pagination'
@@ -239,7 +239,6 @@
         timeText: '',
         statusText: '',
         /*搜索*/
-        siteList: [],
         courierList: []
       }
     },
@@ -272,9 +271,6 @@
     },
     mounted() {
       this.searchOrder();
-      getAllSiteApi().then(result => { // 获得所有网点
-        this.siteList = result.data.message
-      });
       let param = `u_id=${this.userId}&role=${this.role}&pageNumber=1&pageCount=99999&s=`;
       getCourierApi(param).then(result => {
         this.courierList = result.data.message

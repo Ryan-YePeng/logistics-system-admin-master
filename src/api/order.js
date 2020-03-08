@@ -39,13 +39,6 @@ export function exportOrderApi(data) {
       })
 }
 
-// 获取所有网点
-const getAllSiteUrl = 'hdd/getallUser';
-
-export function getAllSiteApi() {
-  return axiosG(getAllSiteUrl)
-}
-
 // 通过单号获取id
 const getIdByOrderUrl = 'hdd/getO_id?l_o_orderNumber=';
 
