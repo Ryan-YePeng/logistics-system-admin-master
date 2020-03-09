@@ -45,7 +45,7 @@
           <transition name="xz-animation">
             <keep-alive
                     v-if="isRouterAlive"
-                    include="Order,Courier,Site,Announcement,Help,Classification,News">
+                    include="Order,Courier,Site,Help,Classification">
               <router-view></router-view>
             </keep-alive>
           </transition>

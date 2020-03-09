@@ -163,15 +163,15 @@ export function validateIdNo(rule, value, callback) {
   }
 }
 
-/* 是否为零和非零开头的数字*/
-export function validateOneToThirteenNumber(rule, value, callback) {
+/* 是否为13位的数字*/
+export function validateThirteenNumber(rule, value, callback) {
 //  const reg = /^[0-9]*$/;
-  const reg = /^(0|[1-9][0-9]*)$/;
+  const reg = /^\d{13}$/;
   if (value === '' || value === undefined || value == null) {
     callback()
   } else {
     if ((!reg.test(value)) && value !== '') {
-      callback(new Error('请输入一个数字'))
+      callback(new Error('请输入一个13位的单号，只能输入0-9'))
     } else {
       callback()
     }

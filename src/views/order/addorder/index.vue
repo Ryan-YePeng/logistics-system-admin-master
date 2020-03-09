@@ -15,36 +15,36 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="寄件人姓名:" prop="c_o_startName">
-              <el-input v-model="form.c_o_startName"></el-input>
+              <el-input v-model="form.c_o_startName" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="始发地:" prop="c_o_provenance">
-              <el-input v-model="form.c_o_provenance"></el-input>
+              <el-input v-model="form.c_o_provenance" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="单位名称:">
-              <el-input v-model="form.c_o_startUnitName"></el-input>
+              <el-input v-model="form.c_o_startUnitName" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="寄件人详细地址:" prop="c_o_startAddress">
-              <el-input v-model="form.c_o_startAddress"></el-input>
+              <el-input v-model="form.c_o_startAddress" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="联系电话:" prop="c_o_startPhone">
-              <el-input v-model="form.c_o_startPhone"></el-input>
+              <el-input v-model="form.c_o_startPhone" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="l_o_startName">
-              <el-input v-model="form.l_o_startName"></el-input>
+              <el-input v-model="form.l_o_startName" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_provenance">
-              <el-input v-model="form.l_o_provenance"></el-input>
+              <el-input v-model="form.l_o_provenance" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input v-model="form.l_o_startUnitName"></el-input>
+              <el-input v-model="form.l_o_startUnitName" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_startAddress">
-              <el-input v-model="form.l_o_startAddress"></el-input>
+              <el-input v-model="form.l_o_startAddress" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_startPhone">
-              <el-input v-model="form.l_o_startPhone"></el-input>
+              <el-input v-model="form.l_o_startPhone" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -79,12 +79,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="内件品名:">
-              <el-input v-model="form.c_o_itemName"></el-input>
+              <el-input v-model="form.c_o_itemName" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item>
-              <el-input v-model="form.l_o_itemName"></el-input>
+              <el-input v-model="form.l_o_itemName" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -98,48 +98,48 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="寄件人证件号:" prop="c_o_sendersId">
-              <el-input v-model="form.c_o_sendersId"></el-input>
+              <el-input v-model="form.c_o_sendersId" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="收件人姓名:" prop="c_o_endName">
-              <el-input v-model="form.c_o_endName"></el-input>
+              <el-input v-model="form.c_o_endName" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="目的地:" prop="c_o_destination">
-              <el-input v-model="form.c_o_destination"></el-input>
+              <el-input v-model="form.c_o_destination" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="单位名称:">
-              <el-input v-model="form.c_o_endUnitName"></el-input>
+              <el-input v-model="form.c_o_endUnitName" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
-              <el-input v-model="form.c_o_endAddress"></el-input>
+              <el-input v-model="form.c_o_endAddress" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
-              <el-input v-model="form.c_o_endPhone"></el-input>
+              <el-input v-model="form.c_o_endPhone" placeholder="中文"></el-input>
             </el-form-item>
             <el-form-item label="收件人证件号:">
-              <el-input v-model="form.c_o_recipientId"></el-input>
+              <el-input v-model="form.c_o_recipientId" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item prop="l_o_sendersId">
-              <el-input v-model="form.l_o_sendersId"></el-input>
+              <el-input v-model="form.l_o_sendersId" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_endName">
-              <el-input v-model="form.l_o_endName"></el-input>
+              <el-input v-model="form.l_o_endName" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_destination">
-              <el-input v-model="form.l_o_destination"></el-input>
+              <el-input v-model="form.l_o_destination" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input v-model="form.l_o_endUnitName"></el-input>
+              <el-input v-model="form.l_o_endUnitName" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_endAddress">
-              <el-input v-model="form.l_o_endAddress"></el-input>
+              <el-input v-model="form.l_o_endAddress" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_endPhone">
-              <el-input v-model="form.l_o_endPhone"></el-input>
+              <el-input v-model="form.l_o_endPhone" placeholder="老挝语"></el-input>
             </el-form-item>
             <el-form-item prop="l_o_recipientId">
-              <el-input v-model="form.l_o_recipientId"></el-input>
+              <el-input v-model="form.l_o_recipientId" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -176,12 +176,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="总计:">
-              <el-input v-model="form.c_o_total"></el-input>
+              <el-input v-model="form.c_o_total" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item>
-              <el-input v-model="form.l_o_total"></el-input>
+              <el-input v-model="form.l_o_total" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -199,16 +199,39 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="物件状态:">
+              <el-radio-group v-model="form.c_problemtybe" @change="changeType">
+                <el-radio-button label="正常"></el-radio-button>
+                <el-radio-button label="问题"></el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row v-if="form.c_problemtybe === '问题'">
+          <el-col :span="12">
+            <el-form-item label="问题描述:" prop="c_problem">
+              <el-input v-model="form.c_problem" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_problem">
+              <el-input v-model="form.l_problem" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <el-col :span="12">
             <el-form-item label="备注:">
-              <el-input v-model="form.c_log_note"></el-input>
+              <el-input v-model="form.c_log_note" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item>
-              <el-input v-model="form.l_log_note"></el-input>
+              <el-input v-model="form.l_log_note" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -270,7 +293,8 @@
     name: "AddOrder",
     data() {
       let validateOrder = (rule, value, callback) => {
-        getIdByOrderApi(value).then(result => {
+        let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.i}`;
+        getIdByOrderApi(param).then(result => {
           let message = result.data.message;
           if (message === 0) {
             callback(new Error('此订单号不可使用,请更换一个订单号'))
@@ -337,11 +361,15 @@
           o_valuationFee: '',
 
           c_o_total: '',
-
           l_o_total: '',
 
           c_log_state: '揽收', // 状态
           l_log_state: 'ເກັບ ກຳ', // 状态
+
+          c_problemtybe: '正常',
+          l_problemtybe: 'ທຳ ມະດາ',
+          c_problem: '',
+          l_problem: '',
 
           c_log_note: '',
           l_log_note: '',
@@ -382,6 +410,10 @@
           l_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
 
           c_log_state: {required: true, message: '请选择状态', trigger: 'change'},
+
+          c_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
+          l_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
+
           c_log_branches: {required: true, message: '请选择网点', trigger: 'change'},
         },
 
@@ -411,6 +443,16 @@
         if (authority === 'level') {
           return -1
         } else if (authority === 'level0') {
+          return 0
+        } else if (authority === 'level1') {
+          return 1
+        } else {
+          return 2
+        }
+      },
+      i() {
+        let authority = this.$store.getters.user.authorities[0]['authority'];
+        if (authority === 'level' || authority === 'level0') {
           return 0
         } else if (authority === 'level1') {
           return 1
@@ -480,6 +522,15 @@
         let width = this.width;
         let height = this.height;
         this.form.o_volume = length * width * height / 5000
+      },
+
+      // 选择物品状态
+      changeType(value) {
+        if (value === '正常') {
+          this.form.l_problemtybe = 'ທຳ ມະດາ'
+        } else {
+          this.form.l_problemtybe = 'ປັນຫາ'
+        }
       },
 
       //  选择快递员

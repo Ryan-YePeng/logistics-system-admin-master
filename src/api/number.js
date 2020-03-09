@@ -36,7 +36,7 @@ export function getHadGivenApi(data) {
 }
 
 // 获取自己网点上的区间好
-const getMyNumberUrl = 'hdd/getOKUse?u_id=';
+const getMyNumberUrl = 'hdd/getOKUse?';
 
 export function getMyNumberApi(data) {
   return axiosG(getMyNumberUrl + data)

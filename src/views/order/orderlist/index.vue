@@ -33,7 +33,7 @@
                 @change="searchOrder"
                 clearable>
           <el-option label="揽收" value="揽收"></el-option>
-          <el-option label="出库" value="出库"></el-option>
+          <el-option label="出发" value="出发"></el-option>
           <el-option label="到达" value="到达"></el-option>
           <el-option label="派送" value="派送"></el-option>
           <el-option label="签收" value="签收"></el-option>
@@ -207,7 +207,7 @@
                   </el-col>
                 </el-row>
 
-                <el-row>
+                <el-row v-if="props.row.o_payment=='保价'">
                   <el-col :span="24">
                     <el-form-item label="保价金额:">{{props.row.o_amount}}</el-form-item>
                   </el-col>
@@ -265,6 +265,32 @@
                   <el-col :span="12">
                     <el-form-item>
                       {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_state}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="物件状态:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problemtybe}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_problemtybe}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row v-if="props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problemtybe=='问题'">
+                  <el-col :span="12">
+                    <el-form-item label="问题描述:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problem}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_problem}}
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -437,6 +463,10 @@
         _this.form.l_log_member = lastItem.l_log_member;
         _this.form.c_log_branches = lastItem.c_log_branches;
         _this.form.l_log_branches = lastItem.l_log_branches;
+        _this.form.c_problemtybe = lastItem.c_problemtybe;
+        _this.form.l_problemtybe = lastItem.l_problemtybe;
+        _this.form.c_problem = lastItem.c_problem;
+        _this.form.l_problem = lastItem.l_problem;
 
         _this.dialogTableVisible = true
       },

@@ -6,8 +6,8 @@
     <div>
       <el-form :model="form1" :rules="rules1" ref="Form1" inline label-width="100px" hide-required-asterisk
                v-if="authority==='level0' || authority==='level'">
-        <el-form-item label="单号录入">
-          <el-input :disabled="true" v-model="form1.firstNumber"></el-input>
+        <el-form-item label="单号录入" prop="firstNumber">
+          <el-input v-model="form1.firstNumber" placeholder="开始号码" clearable></el-input>
         </el-form-item>
         <el-form-item prop="endNumber">
           <el-input v-model="form1.endNumber" placeholder="结束号码" clearable></el-input>
@@ -19,11 +19,11 @@
 
       <el-form :model="form2" :rules="rules2" ref="Form2" inline label-width="100px" hide-required-asterisk
                v-if="authority !=='level2'">
-        <el-form-item label="订单分配">
-          <el-input :disabled="true" v-model="form2.firstNumber"></el-input>
+        <el-form-item label="订单分配" prop="firstNumber">
+          <el-input v-model="form2.firstNumber" placeholder="开始号码" clearable></el-input>
         </el-form-item>
         <el-form-item prop="endNumber">
-          <el-input v-model="form2.endNumber" placeholder="结束号码"></el-input>
+          <el-input v-model="form2.endNumber" placeholder="结束号码" clearable></el-input>
         </el-form-item>
         <el-form-item label="网点:" prop="to_id">
           <el-select v-model="form2.to_id" placeholder="请选择网点">
@@ -51,7 +51,7 @@
     addNumberApi, getMySiteApi, giveNumberApi,
     getNumberApi, getHadGivenApi, getMyNumberApi
   } from '@/api/number'
-  import {validateOneToThirteenNumber} from "@/utils/validate";
+  import {validateThirteenNumber} from "@/utils/validate";
 
   export default {
     name: "OrderNumber",
@@ -66,10 +66,13 @@
           endNumber: ''
         },
         rules1: {
+          firstNumber: [
+            {required: true, message: '请输入开始号码', trigger: 'blur'},
+            {validator: validateThirteenNumber, trigger: 'blur'}
+          ],
           endNumber: [
             {required: true, message: '请输入结束号码', trigger: 'blur'},
-            {min: 1, max: 13, message: '长度需为1-13位', trigger: 'blur'},
-            {validator: validateOneToThirteenNumber, trigger: 'blur'}
+            {validator: validateThirteenNumber, trigger: 'blur'}
           ]
         },
         /* 分配 */
@@ -81,10 +84,13 @@
           to_id: null,
         },
         rules2: {
+          firstNumber: [
+            {required: true, message: '请输入开始号码', trigger: 'blur'},
+            {validator: validateThirteenNumber, trigger: 'blur'}
+          ],
           endNumber: [
             {required: true, message: '请输入结束号码', trigger: 'blur'},
-            {min: 1, max: 13, message: '长度需为1-13位', trigger: 'blur'},
-            {validator: validateOneToThirteenNumber, trigger: 'blur'}
+            {validator: validateThirteenNumber, trigger: 'blur'}
           ],
           to_id: {required: true, message: '请选择网点', trigger: 'change'}
         }
@@ -106,6 +112,18 @@
           return 2
         }
       },
+      i() {
+        let authority = this.$store.getters.user.authorities[0]['authority'];
+        if (authority === 'level') {
+          return 0
+        } else if (authority === 'level0') {
+          return 0
+        } else if (authority === 'level1') {
+          return 1
+        } else {
+          return 2
+        }
+      },
       authority() {
         return this.$store.getters.user.authorities[0]['authority'];
       },
@@ -116,10 +134,10 @@
         } else {
           let str = '';
           list.forEach(item => {
-            if (item.ziji_first === item.ziji_end) {
-              str = str + `${item.ziji_first}, `
+            if (item.start === item.end) {
+              str = str + `${item.start}, `
             } else {
-              str = str + `${item.ziji_first} ~ ${item.ziji_end}, `
+              str = str + `${item.start} ~ ${item.end}, `
             }
           });
           str = str.slice(0, str.length - 2);
@@ -131,69 +149,39 @@
       }
     },
     mounted() {
-      this.getMySite();
-      this.getNumber();
-      this.getCanGiveSection();
-      if (this.authority === 'level2') {
-        getMyNumberApi(this.userId).then(result => {
-          this.canGiveSection = result.data.message;
-        })
-      }
+      this.getMySite(); // 获得下级网点
+      this.getNumber(); // 获得已经录入过的区间
+      this.getCanGiveSection(); // 获得可用的单号
     },
     methods: {
       getCanGiveSection() { // 获得可分配单号
         if (this.authority === 'level2') return;
-        let haveSection = [];
-        let hadGivenSection = [];
         this.canGiveSection = [];
-        getMyNumberApi(this.userId) // 我所有的区间
-            .then(result => {
-              haveSection = result.data.message;
-              // console.log('我有的', haveSection);
-              let param = `u_id=${this.userId}&role=${this.role}`;
-              return getHadGivenApi(param) // 已经分配的区间
-            })
-            .then(result => {
-              hadGivenSection = result.data.message;
-              // console.log('已经给了', hadGivenSection);
-
-
-              let length = hadGivenSection.length;
-              if (length !== 0) {
-                let lastHadGivenItem = hadGivenSection[length - 1];
-                haveSection.forEach(haveItem => {
-                  if (lastHadGivenItem.l_r_endnumber > haveItem.ziji_first && lastHadGivenItem.l_r_endnumber < haveItem.ziji_end) {
-                    this.canGiveSection.push({
-                      ziji_first: lastHadGivenItem.l_r_endnumber + 1,
-                      ziji_end: haveItem.ziji_end
-                    })
-                  }
-                  if (lastHadGivenItem.l_r_endnumber === haveItem.ziji_first && lastHadGivenItem.l_r_endnumber < haveItem.ziji_end) {
-                    this.canGiveSection.push({
-                      ziji_first: lastHadGivenItem.l_r_endnumber + 1,
-                      ziji_end: haveItem.ziji_end
-                    })
-                  }
-                  if (lastHadGivenItem.l_r_endnumber < haveItem.ziji_first && lastHadGivenItem.l_r_endnumber < haveItem.ziji_end) {
-                    this.canGiveSection.push({ziji_first: haveItem.ziji_first, ziji_end: haveItem.ziji_end})
-                  }
-                })
+        let param = `u_id=${this.userId}&role=${this.i}`;
+        getMyNumberApi(param).then(result => {
+          let response = result.data.message;
+          if (response.length === 0) return;
+          let start = response.shift();
+          let last = start;
+          let list = [];
+          let length = response.length;
+          response.forEach((current, index) => {
+            if (last + 1 === current) {
+              last++
+            } else {
+              list.push({start: start, end: last});
+              last = start = response[index];
+            }
+            if (length === index + 1) {
+              if (current === response[index - 1] + 1) {
+                list.push({start: start, end: last});
               } else {
-                this.canGiveSection = haveSection
+                list.push({start: current, end: current});
               }
-
-
-              //  console.log('可分配的', this.canGiveSection);
-              if (this.canGiveSection.length !== 0) {
-                let firstItem = this.canGiveSection[0].ziji_first;
-                firstItem = firstItem + '';
-                while (firstItem.length < 13) {
-                  firstItem = '0' + firstItem
-                }
-                this.form2.firstNumber = firstItem
-              }
-              this.isGiveLoading = false;
-            })
+            }
+          });
+          this.canGiveSection = list;
+        })
       },
       // 分配订单
       giveOrder() {
@@ -215,9 +203,11 @@
               this.isGiveLoading = false;
               return;
             }
-            let isIn = data.endNumber > this.canGiveSection[0].ziji_end;
-            if (isIn) {
-              this.$errorMsg('该区间存在不能使用的单号，请更换结束号码');
+            let isIn = this.canGiveSection.some(item => {
+              return data.firstNumber >= item.start && data.endNumber <= item.end;
+            });
+            if (!isIn) {
+              this.$errorMsg('该区间存在不能使用的单号，请换一个区间');
               this.isGiveLoading = false;
               return
             }
@@ -232,6 +222,8 @@
 
         });
       },
+
+
       // 获得下级网点
       getMySite() {
         if (this.authority === 'level2') return;
@@ -245,30 +237,19 @@
           }
         })
       },
-      // 获得开始单号
+      // 获得已经录入过的区间
       getNumber() {
         if (this.authority !== 'level' && this.authority !== 'level0') return;
         getNumberApi().then(result => { // 获得不可用区间
           this.canNotUsedList = result.data.message;
-          let length = this.canNotUsedList.length;
-          if (length === 0) {
-            this.form1.firstNumber = '0000000000000'
-          } else {
-            let maxNumber = this.canNotUsedList[length - 1]['q_end'] + 1;
-            maxNumber = maxNumber + '';
-            while (maxNumber.length < 13) {
-              maxNumber = '0' + maxNumber
-            }
-            this.form1.firstNumber = maxNumber;
-          }
           this.isImportantLoading = false;
         })
       },
       // 单号录入
       importOrder() {
         this.$refs['Form1'].validate((valid) => {
-          this.isImportantLoading = true;
           if (valid) {
+            this.isImportantLoading = true;
             let data = {...this.form1};
             data.firstNumber = data.firstNumber / 1;
             data.endNumber = data.endNumber / 1;
@@ -282,6 +263,17 @@
               this.isImportantLoading = false;
               return;
             }
+            let isHas = this.canNotUsedList.some(item => {
+              return data.firstNumber <= item.q_start && data.endNumber >= item.q_start
+                  || data.firstNumber >= item.q_start && data.endNumber <= item.q_end
+                  || data.firstNumber <= item.q_end && data.endNumber >= item.q_end
+                  || data.firstNumber <= item.q_start && data.endNumber >= item.q_end;
+            });
+            if (isHas) {
+              this.$errorMsg('该区间存在已被录入过的单号，请换一个区间');
+              this.isImportantLoading = false;
+              return
+            }
             data.u_id = this.userId;
             addNumberApi(data).then(() => {
               Object.assign(this.$data.form1, this.$options.data().form1);
@@ -293,7 +285,7 @@
             return false;
           }
         });
-      }
+      },
     }
   }
 </script>

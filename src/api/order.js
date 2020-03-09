@@ -1,4 +1,4 @@
-import {axiosds, axiosG, axiosK, axiosL, axiosP} from './request'
+import {axiosds, axiosG, axiosK, axiosL} from './request'
 
 // 录入更改订单
 const editOrderUrl = 'hdd/addL_order';
@@ -40,7 +40,7 @@ export function exportOrderApi(data) {
 }
 
 // 通过单号获取id
-const getIdByOrderUrl = 'hdd/getO_id?l_o_orderNumber=';
+const getIdByOrderUrl = 'hdd/getO_id?';
 
 export function getIdByOrderApi(data) {
   return axiosG(getIdByOrderUrl + data)
