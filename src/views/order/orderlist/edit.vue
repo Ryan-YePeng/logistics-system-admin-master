@@ -286,7 +286,7 @@
         number: '',
         option: [
           {c_log_state: '揽收', l_log_state: 'ເກັບ ກຳ'},
-          {c_log_state: '出发', l_log_state: 'ຕັ້ງຄ່າ'},
+          {c_log_state: '发出', l_log_state: 'ສົ່ງອອກ'},
           {c_log_state: '到达', l_log_state: 'ມາຮອດ'},
           {c_log_state: '派送', l_log_state: 'ຈັດສົ່ງ'},
           {c_log_state: '签收', l_log_state: 'ລົງທະບຽນ'},

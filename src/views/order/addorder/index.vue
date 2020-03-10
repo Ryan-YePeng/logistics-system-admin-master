@@ -288,12 +288,13 @@
   import {getCourierApi} from "@/api/courier";
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
+  import user from "@/store/modules/user";
 
   export default {
     name: "AddOrder",
     data() {
       let validateOrder = (rule, value, callback) => {
-        let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.i}`;
+        let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.role}`;
         getIdByOrderApi(param).then(result => {
           let message = result.data.message;
           if (message === 0) {
@@ -435,6 +436,9 @@
       }
     },
     computed: {
+      user() {
+        return this.$store.getters.user
+      },
       userId() {
         return this.$store.getters.userId
       },
@@ -465,7 +469,11 @@
       let param = `u_id=${this.userId}&role=${this.role}&pageNumber=1&pageCount=99999&s=`;
       getCourierApi(param).then(result => {
         this.courierList = result.data.message
-      })
+      });
+      this.form.c_log_branches = this.user.c__branchesName;
+      this.form.l_log_branches = this.user.l_branchesName;
+      this.form.c_o_provenance = this.user.c_br_address;
+      this.form.l_o_provenance = this.user.l_br_address;
     },
     methods: {
       /* 模糊搜索网点 */

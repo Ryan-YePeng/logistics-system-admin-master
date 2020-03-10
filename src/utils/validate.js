@@ -165,7 +165,7 @@ export function validateIdNo(rule, value, callback) {
 
 /* 是否为13位的数字*/
 export function validateThirteenNumber(rule, value, callback) {
-//  const reg = /^[0-9]*$/;
+  value = value.trim();
   const reg = /^\d{13}$/;
   if (value === '' || value === undefined || value == null) {
     callback()
