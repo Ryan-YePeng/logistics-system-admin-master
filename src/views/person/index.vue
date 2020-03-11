@@ -62,6 +62,8 @@
 
 <script>
   import PasswordDialog from './passwordDialog'
+  import {getUserApi} from '@/api/person'
+  import user from "@/store/modules/user";
 
   export default {
     components: {PasswordDialog},
@@ -80,11 +82,25 @@
       'level': function () {
         let data = this.$store.getters.user;
         return data.authorities[0]['authority']
-      }
+      },
+      'userId': function () {
+        return this.$store.getters.userId
+      },
+    },
+    mounted() {
+      getUserApi(this.userId).then(result => {
+        let user = result.data.message;
+        this.$store.dispatch('setUser', user);
+      });
     },
     methods: {
       // 修改密码
       changePassword() {
+        let isCanChangePassword = this.user.u_canupdate;
+        if (!isCanChangePassword) {
+          this.$warnMsg('您当前能不能修改密码，请联系您的上级部门');
+          return
+        }
         const _this = this.$refs.passwordDialogForm;
         _this.passwordDialogVisible = true
       },

@@ -34,3 +34,10 @@ const searchSiteUrl = 'hdd/gettheall?s=';
 export function searchSiteApi(data) {
   return axiosG(searchSiteUrl + data)
 }
+
+// 是否能修改密码
+const changeIsCanChangePasswordUrl = 'hdd/openOrclose';
+
+export function changeIsCanChangePasswordApi(data) {
+  return axiosP(changeIsCanChangePasswordUrl, data)
+}

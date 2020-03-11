@@ -19,10 +19,10 @@
                   prop="c__branchesName"
                   label="网点名称">
           </el-table-column>
-          <!--          <el-table-column-->
-          <!--                  prop="username"-->
-          <!--                  label="账号">-->
-          <!--          </el-table-column>-->
+          <el-table-column
+                  prop="username"
+                  label="编号">
+          </el-table-column>
           <el-table-column
                   prop="c_br_phone"
                   label="联系方式">
@@ -43,6 +43,13 @@
               <span v-if="scope.row.authorities[0].authority == 'level2'">县</span>
             </template>
           </el-table-column>
+
+          <el-table-column label="是否可修改密码">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.u_canupdate" @change="changeIsCanChangePassword(scope.row)"></el-switch>
+            </template>
+          </el-table-column>
+
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini">
@@ -74,7 +81,7 @@
 </template>
 
 <script>
-  import {getSiteApi, deleteSiteApi} from '@/api/site'
+  import {getSiteApi, deleteSiteApi, changeIsCanChangePasswordApi} from '@/api/site'
   import AddSite from './add'
   import EditSite from './edit'
   import pagination from '@/components/pagination'
@@ -124,16 +131,26 @@
           pagination.total = result.data.status
         })
       },
-      add() {
+      changeIsCanChangePassword(obj) { // 是否可修改密码
+        let data = {};
+        data.u_id = obj.u_id;
+        data.id = this.userId;
+        let i;
+        if (obj.u_canupdate) i = 1;
+        else i = 0;
+        data.i = i;
+        changeIsCanChangePasswordApi(data);
+      },
+      add() { // 添加网点
         this.$refs.AddSite.dialogTableVisible = true
       },
-      edit(obj) {
+      edit(obj) { // 编辑网点
         let _this = this.$refs.EditSite;
         obj.password = '';
         objectEvaluate(obj, _this.form);
         _this.dialogTableVisible = true
       },
-      deleteSite(id) {
+      deleteSite(id) { // 删除网点
         this.isDeleteLoading = true;
         deleteSiteApi([id])
             .then(() => {
@@ -145,12 +162,6 @@
               this.isDeleteLoading = false;
               this.$refs[id].doClose()
             });
-      },
-      getSelected(array) {
-        this.deleteList = array.map(item => {
-          return item.l_co_id
-        });
-        this.isDeleteMoreDisabled = array.length === 0;
       }
     }
   }

@@ -36,6 +36,7 @@
           <el-option label="发出" value="发出"></el-option>
           <el-option label="到达" value="到达"></el-option>
           <el-option label="派送" value="派送"></el-option>
+          <el-option label="问题件" value="问题件"></el-option>
           <el-option label="签收" value="签收"></el-option>
         </el-select>
         <el-button type="success" @click="searchOrder">搜索全部</el-button>
@@ -282,19 +283,6 @@
                   </el-col>
                 </el-row>
 
-                <el-row v-if="props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problemtybe=='问题'">
-                  <el-col :span="12">
-                    <el-form-item label="问题描述:">
-                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problem}}
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item>
-                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_problem}}
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="备注:">
@@ -322,6 +310,19 @@
 
                 <el-row>
                   <el-col :span="12">
+                    <el-form-item label="快递员联系方式:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_co_contact}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_co_contact}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
                     <el-form-item label="网点:">
                       {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_branches}}
                     </el-form-item>
@@ -329,6 +330,19 @@
                   <el-col :span="12">
                     <el-form-item>
                       {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_log_branches}}
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="发往网点:">
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problem}}
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item>
+                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_problem}}
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -464,12 +478,14 @@
         _this.form.l_log_note = lastItem.l_log_note;
         _this.form.c_log_member = lastItem.c_log_member;
         _this.form.l_log_member = lastItem.l_log_member;
+        _this.form.c_co_contact = lastItem.c_co_contact;
+        _this.form.l_co_contact = lastItem.l_co_contact;
         // _this.form.c_log_branches = lastItem.c_log_branches;
         // _this.form.l_log_branches = lastItem.l_log_branches;
         _this.form.c_problemtybe = lastItem.c_problemtybe;
         _this.form.l_problemtybe = lastItem.l_problemtybe;
-        _this.form.c_problem = lastItem.c_problem;
-        _this.form.l_problem = lastItem.l_problem;
+        // _this.form.c_problem = lastItem.c_problem;
+        // _this.form.l_problem = lastItem.l_problem;
 
         _this.form.c_log_branches = this.user.c__branchesName;
         _this.form.l_log_branches = this.user.l_branchesName;

@@ -52,7 +52,7 @@ service.interceptors.response.use( //响应拦截
         statusText = error.response.statusText
       } finally {
         if (statusText === 'Internal Server Error') {
-          errorMessage('网络错误，请检查您的网络状况！')
+          errorMessage('服务器崩溃，请稍后再试！')
         }
       }
       const {message} = error.response.data;

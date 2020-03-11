@@ -19,7 +19,6 @@
           <el-button type="success" @click="checkHadInputOrder">查看已录入的单号</el-button>
         </el-form-item>
       </el-form>
-
       <el-form :model="form2" :rules="rules2" ref="Form2" inline label-width="100px" hide-required-asterisk
                v-if="authority !=='level2'">
         <el-form-item label="订单分配" prop="firstNumber">
@@ -28,43 +27,47 @@
         <el-form-item prop="endNumber">
           <el-input v-model="form2.endNumber" placeholder="结束号码" clearable></el-input>
         </el-form-item>
+
         <el-form-item label="网点:" prop="to_id">
-          <el-select v-model="form2.to_id" placeholder="请选择网点" @change="selectSite">
-            <template v-for="item in siteList">
+          <el-select
+                  v-model="form2.to_id"
+                  placeholder="请输入网点名称"
+                  filterable
+                  remote
+                  clearable
+                  reserve-keyword
+                  :remote-method="remoteMethod"
+                  :loading="searchLoading"
+                  @change="siteNameSelected">
+            <template v-for="item in siteNameOptions">
               <el-option
                       v-if="item.username !== '8560000' && item.username !== '8560001'"
-                      :key="item.u_id"
-                      :label="item.c__branchesName"
-                      :value="item.u_id">
+                      :key="item.key"
+                      :label="item.label"
+                      :value="item.value">
                 <span style="float: left">{{ item.c__branchesName }}</span>
                 <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
               </el-option>
             </template>
           </el-select>
         </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="giveOrder" :disabled="isCanGive" :loading="isGiveLoading">分配</el-button>
         </el-form-item>
       </el-form>
       <el-form>
         <el-form-item label-width="100px" label="可用单号">
-          <span>{{canGiveList}}</span>
+          <pre class="my-pre-wrap">{{canGiveList}}</pre>
         </el-form-item>
       </el-form>
       <el-dialog
               title="已录入的单号"
               width="700px"
+              fullscreen
               :visible.sync="dialogTableVisible">
-        <el-row>
-          <el-col :span="12">
-
-          </el-col>
-          <el-col :span="12">
-
-          </el-col>
-        </el-row>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogTableVisible = false">确 定</el-button>
+        <div>
+          <span v-for="item in canNotUsedList">{{item.q_start}}~{{item.q_end}}, </span>
         </div>
       </el-dialog>
     </div>
@@ -76,7 +79,9 @@
     addNumberApi, getMySiteApi, giveNumberApi,
     getNumberApi, getMyNumberApi
   } from '@/api/number'
+  import {searchSiteApi} from "@/api/site";
   import {validateThirteenNumber} from "@/utils/validate";
+  import {isEmpty} from "@/utils/common";
 
   export default {
     name: "OrderNumber",
@@ -84,8 +89,8 @@
       return {
         /* 录入 */
         dialogTableVisible: false,
-        siteList: [], // 下级网点列表
-        siteObj: {},
+        // siteList: [], // 下级网点列表
+
         isImportantLoading: false,
         canNotUsedList: [], // 不能录入的区间
         form1: {
@@ -126,6 +131,7 @@
         /* 模糊搜索 */
         searchLoading: false,
         siteNameOptions: [],
+        siteObj: {},
         /* 模糊搜索 */
       }
     },
@@ -173,29 +179,67 @@
       }
     },
     mounted() {
-      this.getMySite(); // 获得下级网点
+      // this.getMySite(); // 获得下级网点
       this.getNumber(); // 获得已经录入过的区间
       this.getCanGiveSection(); // 获得可用的单号
     },
     methods: {
-      /* 模糊搜索 */
-
-      /* 模糊搜索 */
+      /* 模糊搜索网点 */
+      siteNameSelected() {
+        let u_id = this.form2.to_id;
+        setTimeout(() => {
+          this.siteNameOptions.some(item => {
+            if (item.u_id === u_id) {
+              this.siteObj = item;
+              return true
+            }
+          });
+        }, 100)
+      },
+      remoteMethod(query) {
+        if (query !== '') {
+          this.searchLoading = true;
+          let param = `pageNumber=1&pageCount=999999&s=${query}&u_id=${this.userId}&role=${this.role}`;
+          getMySiteApi(param).then(result => {
+            this.searchLoading = false;
+            let siteNameOptionsData = [];
+            let response = result.data.message;
+            for (let i = 0; i < response.length; i++) {
+              siteNameOptionsData.push({
+                value: response[i].u_id,
+                label: response[i].c__branchesName,
+                c__branchesName: response[i].c__branchesName,
+                l_branchesName: response[i].l_branchesName,
+                role: response[i].authorities[0]['authority'],
+                username: response[i].username,
+                key: response[i].u_id,
+                u_id: response[i].u_id
+              })
+            }
+            this.siteNameOptions = siteNameOptionsData;
+          }).catch(() => {
+            this.searchLoading = false;
+          })
+        } else {
+          this.siteNameOptions = [];
+        }
+      },
+      /* 模糊搜索网点 */
 
       // 查看已录入的单号
       checkHadInputOrder() {
         this.dialogTableVisible = true
       },
 
-      // 选择网点
-      selectSite(id) {
-        this.siteList.some(item => {
-          if (item.u_id === id) {
-            this.siteObj = item;
-            return true
-          }
-        })
-      },
+      // // 选择网点
+      // selectSite(id) {
+      //   this.siteList.some(item => {
+      //     if (item.u_id === id) {
+      //       this.siteObj = item;
+      //       return true
+      //     }
+      //   })
+      // },
       // 补零函数
       addO(value) {
         value = value + '';
@@ -248,7 +292,7 @@
               data.endNumber = data.endNumber / 1;
               data.u_id = this.userId;
               let i;
-              let objRole = this.siteObj.authorities[0]['authority'];
+              let objRole = this.siteObj.role;
               if (objRole === 'level0') i = -1;
               if (objRole === 'level1') i = 0;
               if (objRole === 'level2') i = 1;
@@ -271,6 +315,7 @@
                 this.isGiveLoading = false;
                 return
               }
+              data.name = this.siteObj.c__branchesName;
               giveNumberApi(data).then(() => {
                 Object.assign(this.$data.form2, this.$options.data().form2);
                 this.$refs['Form2'].resetFields();
@@ -284,19 +329,19 @@
       },
 
 
-      // 获得下级网点
-      getMySite() {
-        if (this.authority === 'level2') return;
-        let param = `pageNumber=1&pageCount=999999&s=&u_id=${this.userId}&role=${this.role}`;
-        getMySiteApi(param).then(result => {
-          let data = result.data.message;
-          if (typeof (data) === 'string') {
-            this.siteList = []
-          } else {
-            this.siteList = data
-          }
-        })
-      },
+      // // 获得下级网点
+      // getMySite() {
+      //   if (this.authority === 'level2') return;
+      //   let param = `pageNumber=1&pageCount=999999&s=&u_id=${this.userId}&role=${this.role}`;
+      //   getMySiteApi(param).then(result => {
+      //     let data = result.data.message;
+      //     if (typeof (data) === 'string') {
+      //       this.siteList = []
+      //     } else {
+      //       this.siteList = data
+      //     }
+      //   })
+      // },
       // 获得已经录入过的区间
       getNumber() {
         if (this.authority !== 'level' && this.authority !== 'level0') return;
@@ -354,5 +399,7 @@
 </script>
 
 <style lang="scss">
-
+  .my-pre-wrap {
+    white-space: pre-wrap !important;
+  }
 </style>

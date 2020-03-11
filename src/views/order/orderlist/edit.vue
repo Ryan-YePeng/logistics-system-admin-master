@@ -174,7 +174,7 @@
           </el-collapse-item>
         </el-collapse>
 
-        <el-form-item label="定单号:" style="margin-top: 50px">{{number}}</el-form-item>
+        <el-form-item label="订单号:" style="margin-top: 50px">{{number}}</el-form-item>
         <el-form-item label="状态:" prop="l_log_state">
           <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
             <el-option
@@ -195,19 +195,6 @@
                 <el-radio-button label="正常"></el-radio-button>
                 <el-radio-button label="问题"></el-radio-button>
               </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row v-if="form.c_problemtybe === '问题'">
-          <el-col :span="12">
-            <el-form-item label="问题描述:" prop="c_problem">
-              <el-input v-model="form.c_problem" placeholder="中文"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="l_problem">
-              <el-input v-model="form.l_problem" placeholder="老挝语"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,10 +229,23 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="网点:" prop="c_log_branches">
+            <el-form-item label="当前网点:" prop="c_log_branches">
+              {{form.c_log_branches}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_log_branches">
+              {{form.l_log_branches}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_log_branches"
+                      v-model="form.c_problem"
                       placeholder="请输入网点名称"
+                      clearable
                       filterable
                       remote
                       reserve-keyword
@@ -261,6 +261,11 @@
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              发往网点编号： {{form.c_log_username}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -289,6 +294,7 @@
           {c_log_state: '发出', l_log_state: 'ສົ່ງອອກ'},
           {c_log_state: '到达', l_log_state: 'ມາຮອດ'},
           {c_log_state: '派送', l_log_state: 'ຈັດສົ່ງ'},
+          {c_log_state: '问题件', l_log_state: 'ຊິ້ນບັນຫາ'},
           {c_log_state: '签收', l_log_state: 'ລົງທະບຽນ'},
         ],
         form: {
@@ -349,17 +355,22 @@
 
           c_problemtybe: '正常',
           l_problemtybe: 'ທຳ ມະດາ',
-          c_problem: '',
-          l_problem: '',
 
           c_log_note: '',
           l_log_note: '',
 
           c_log_member: '',
           l_log_member: '',
+          c_co_contact: '',
+          l_co_contact: '',
 
           c_log_branches: '',
-          l_log_branches: ''
+          l_log_branches: '',
+
+          c_problem: '',  // 下一网点
+          l_problem: '',  // 下一网点
+          c_log_username: '', // 下一网点编号
+          l_log_username: '', // 下一网点编号
         },
         rules: {
           c_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
@@ -386,10 +397,6 @@
 
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'},
 
-          c_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
-          l_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
-
-          c_log_branches: {required: true, message: '请选择网点', trigger: 'change'},
         },
 
         /* 模糊搜索 */
@@ -412,15 +419,19 @@
     methods: {
       /* 模糊搜索网点 */
       siteNameSelected() {
-        let name = this.form.c_log_branches;
+        let name = this.form.c_problem;
         setTimeout(() => {
-          if (isEmpty(this.form.c_log_branches)) {
-            this.form.l_log_branches = '';
+          if (isEmpty(this.form.c_problem)) {
+            this.form.l_problem = '';
+            this.form.c_log_username = '';
+            this.form.l_log_username = '';
             return
           }
           this.siteNameOptions.some(item => {
             if (item.c__branchesName === name) {
-              this.form.l_log_branches = item.l_branchesName;
+              this.form.l_problem = item.l_branchesName;
+              this.form.c_log_username = item.username;
+              this.form.l_log_username = item.username;
               return true
             }
           });
@@ -441,6 +452,7 @@
                 l_branchesName: response[i].l_branchesName,
                 c_br_address: response[i].c_br_address,
                 l_br_address: response[i].l_br_address,
+                username: response[i].username,
                 key: response[i].u_id
               })
             }
@@ -478,10 +490,14 @@
       selectCourier(name) {
         if (isEmpty(name)) {
           this.form.l_log_member = '';
+          this.form.c_co_contact = '';
+          this.form.l_co_contact = '';
           return
         }
         this.courierList.some(item => {
           if (item.c_co_name === name) {
+            this.form.c_co_contact = item.c_co_contact;
+            this.form.l_co_contact = item.l_co_contact;
             this.form.l_log_member = item.l_co_name;
             return true
           }

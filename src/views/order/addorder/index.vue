@@ -210,19 +210,6 @@
           </el-col>
         </el-row>
 
-        <el-row v-if="form.c_problemtybe === '问题'">
-          <el-col :span="12">
-            <el-form-item label="问题描述:" prop="c_problem">
-              <el-input v-model="form.c_problem" placeholder="中文"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item prop="l_problem">
-              <el-input v-model="form.l_problem" placeholder="老挝语"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
         <el-row>
           <el-col :span="12">
             <el-form-item label="备注:">
@@ -235,6 +222,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="快递员:">
@@ -253,10 +241,23 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="网点:" prop="c_log_branches">
+            <el-form-item label="当前网点:" prop="c_log_branches">
+              {{form.c_log_branches}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_log_branches">
+              {{form.l_log_branches}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_log_branches"
+                      v-model="form.c_problem"
                       placeholder="请输入网点名称"
+                      clearable
                       filterable
                       remote
                       reserve-keyword
@@ -274,6 +275,11 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              发往网点编号： {{form.c_log_username}}
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <el-button :loading="isSubmitLoading" style="float: right;margin-bottom: 10px" type="primary"
@@ -288,7 +294,6 @@
   import {getCourierApi} from "@/api/courier";
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
-  import user from "@/store/modules/user";
 
   export default {
     name: "AddOrder",
@@ -369,17 +374,22 @@
 
           c_problemtybe: '正常',
           l_problemtybe: 'ທຳ ມະດາ',
-          c_problem: '',
-          l_problem: '',
 
           c_log_note: '',
           l_log_note: '',
 
           c_log_member: '',
           l_log_member: '',
+          c_co_contact: '',
+          l_co_contact: '',
 
           c_log_branches: '',
-          l_log_branches: ''
+          l_log_branches: '',
+
+          c_problem: '',  // 下一网点
+          l_problem: '',  // 下一网点
+          c_log_username: '', // 下一网点编号
+          l_log_username: '', // 下一网点编号
         },
         rules: {
           o_id: [
@@ -412,10 +422,7 @@
 
           c_log_state: {required: true, message: '请选择状态', trigger: 'change'},
 
-          c_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
-          l_problem: {required: true, message: '请输入问题描述', trigger: 'blur'},
 
-          c_log_branches: {required: true, message: '请选择网点', trigger: 'change'},
         },
 
         /* 模糊搜索 */
@@ -478,19 +485,19 @@
     methods: {
       /* 模糊搜索网点 */
       siteNameSelected() {
-        let name = this.form.c_log_branches;
+        let name = this.form.c_problem;
         setTimeout(() => {
-          if (isEmpty(this.form.c_log_branches)) {
-            this.form.l_log_branches = '';
-            this.form.c_o_provenance = '';
-            this.form.l_o_provenance = '';
+          if (isEmpty(this.form.c_problem)) {
+            this.form.l_problem = '';
+            this.form.c_log_username = '';
+            this.form.l_log_username = '';
             return
           }
           this.siteNameOptions.some(item => {
             if (item.c__branchesName === name) {
-              this.form.l_log_branches = item.l_branchesName;
-              this.form.c_o_provenance = item.c_br_address;
-              this.form.l_o_provenance = item.l_br_address;
+              this.form.l_problem = item.l_branchesName;
+              this.form.c_log_username = item.username;
+              this.form.l_log_username = item.username;
               return true
             }
           });
@@ -511,6 +518,7 @@
                 l_branchesName: response[i].l_branchesName,
                 c_br_address: response[i].c_br_address,
                 l_br_address: response[i].l_br_address,
+                username: response[i].username,
                 key: response[i].u_id
               })
             }
@@ -545,11 +553,15 @@
       selectCourier(name) {
         if (isEmpty(name)) {
           this.form.l_log_member = '';
+          this.form.c_co_contact = '';
+          this.form.l_co_contact = '';
           return
         }
         this.courierList.some(item => {
           if (item.c_co_name === name) {
             this.form.l_log_member = item.l_co_name;
+            this.form.c_co_contact = item.c_co_contact;
+            this.form.l_co_contact = item.l_co_contact;
             return true
           }
         });

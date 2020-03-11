@@ -178,6 +178,13 @@ module.exports = {
           "path": "ordernumber",
           "component": "ordernumber",
           "children": []
+        },
+        {
+          "name": "已分配单号",
+          "icon": "hadallot",
+          "path": "hadallot",
+          "component": "hadallot",
+          "children": []
         }
       ]
     },
@@ -252,6 +259,13 @@ module.exports = {
           "icon": "courier",
           "path": "courier",
           "component": "courier"
+        },
+        {
+          "name": "已分配单号",
+          "icon": "hadallot",
+          "path": "hadallot",
+          "component": "hadallot",
+          "children": []
         }
       ]
     }

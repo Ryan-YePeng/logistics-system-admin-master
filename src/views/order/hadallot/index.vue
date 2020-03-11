@@ -2,17 +2,23 @@
   <div id="had-allot-order-number">
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        可撤回单号列表
+        已分配单号列表
       </div>
       <div>
         <el-table v-loading="isWithdrawLoading" :data="hadGivenList">
-          <el-table-column
-                  prop="start"
-                  label="开始号码">
+          <el-table-column prop="r_start" label="开始号码">
+            <template slot-scope="scope">
+              <span>{{addO(scope.row.r_start)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="结束号码">
+            <template slot-scope="scope">
+              <span>{{addO(scope.row.r_end)}}</span>
+            </template>
           </el-table-column>
           <el-table-column
-                  prop="end"
-                  label="结束号码">
+                  prop="r_name"
+                  label="网点名称">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
@@ -22,20 +28,19 @@
         </el-table>
       </div>
     </el-card>
-
-
   </div>
 </template>
 
 <script>
-  import {withdrawApi, getHadGivenApi} from '@/api/number'
+  import {getHadGivenApi, withdrawApi} from '@/api/number'
 
   export default {
     name: "HadAllot",
     data() {
       return {
         hadGivenList: [],
-        isWithdrawLoading: false
+        dialogTableVisible: false,
+        isWithdrawLoading: false,
       }
     },
     computed: {
@@ -59,8 +64,17 @@
       this.getHadGiven()
     },
     methods: {
-      withdraw() {
-        // withdrawApi()
+      withdraw(obj) {
+        this.$msgBox().then(() => {
+          let data = {};
+          data.firstNumber = obj.r_start / 1;
+          data.endNumber = obj.r_end / 1;
+          data.u_id = this.userId;
+          data.role = this.role;
+          withdrawApi(data).then(() => {
+            this.getHadGiven();
+          })
+        });
       },
 
       getHadGiven() {
@@ -68,34 +82,7 @@
         let param = `u_id=${this.userId}&role=${this.role}`;
         this.isWithdrawLoading = true;
         getHadGivenApi(param).then(result => {
-          let response = result.data.message;
-          if (response.length === 0) {
-            this.isWithdrawLoading = false;
-          }
-          let start = response.shift();
-          let last = start;
-          let list = [];
-          let length = response.length;
-          response.forEach((current, index) => {
-            if (last + 1 === current) {
-              last++
-            } else {
-              list.push({start: start, end: last});
-              last = start = response[index];
-            }
-            if (length === index + 1) {
-              if (current === response[index - 1] + 1) {
-                list.push({start: start, end: last});
-              } else {
-                list.push({start: current, end: current});
-              }
-            }
-          });
-          list.forEach(item => {
-            item.start = this.addO(item.start);
-            item.end = this.addO(item.end);
-          });
-          this.hadGivenList = list;
+          this.hadGivenList = result.data.message;
           this.isWithdrawLoading = false;
         })
       },
