@@ -272,19 +272,6 @@
 
                 <el-row>
                   <el-col :span="12">
-                    <el-form-item label="物件状态:">
-                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_problemtybe}}
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item>
-                      {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].l_problemtybe}}
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col :span="12">
                     <el-form-item label="备注:">
                       {{props.row.l_logisticsupdate[props.row.l_logisticsupdate.length-1].c_log_note}}
                     </el-form-item>
@@ -482,8 +469,8 @@
         _this.form.l_co_contact = lastItem.l_co_contact;
         // _this.form.c_log_branches = lastItem.c_log_branches;
         // _this.form.l_log_branches = lastItem.l_log_branches;
-        _this.form.c_problemtybe = lastItem.c_problemtybe;
-        _this.form.l_problemtybe = lastItem.l_problemtybe;
+        // _this.form.c_problemtybe = lastItem.c_problemtybe;
+        // _this.form.l_problemtybe = lastItem.l_problemtybe;
         // _this.form.c_problem = lastItem.c_problem;
         // _this.form.l_problem = lastItem.l_problem;
 

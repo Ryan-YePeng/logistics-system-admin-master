@@ -190,17 +190,6 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="物件状态:">
-              <el-radio-group v-model="form.c_problemtybe" @change="changeType">
-                <el-radio-button label="正常"></el-radio-button>
-                <el-radio-button label="问题"></el-radio-button>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="备注:">
               <el-input v-model="form.c_log_note" placeholder="中文"></el-input>
             </el-form-item>
@@ -353,8 +342,8 @@
           c_log_state: '揽收', // 状态
           l_log_state: 'ເກັບ ກຳ', // 状态
 
-          c_problemtybe: '正常',
-          l_problemtybe: 'ທຳ ມະດາ',
+          c_problemtybe: '',
+          l_problemtybe: '',
 
           c_log_note: '',
           l_log_note: '',
@@ -465,15 +454,6 @@
         }
       },
       /* 模糊搜索网点 */
-
-      // 选择物品状态
-      changeType(value) {
-        if (value === '正常') {
-          this.form.l_problemtybe = 'ທຳ ມະດາ'
-        } else {
-          this.form.l_problemtybe = 'ປັນຫາ'
-        }
-      },
 
       // 选择状态
       selectState(name) {

@@ -201,17 +201,6 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="物件状态:">
-              <el-radio-group v-model="form.c_problemtybe" @change="changeType">
-                <el-radio-button label="正常"></el-radio-button>
-                <el-radio-button label="问题"></el-radio-button>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="备注:">
               <el-input v-model="form.c_log_note" placeholder="中文"></el-input>
             </el-form-item>
@@ -299,7 +288,12 @@
     name: "AddOrder",
     data() {
       let validateOrder = (rule, value, callback) => {
+        value = value.trim();
         let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.role}`;
+        if (value.length !== 13) {
+          callback(new Error('请输入长度为13的单号'));
+          return
+        }
         getIdByOrderApi(param).then(result => {
           let message = result.data.message;
           if (message === 0) {
@@ -372,8 +366,8 @@
           c_log_state: '揽收', // 状态
           l_log_state: 'ເກັບ ກຳ', // 状态
 
-          c_problemtybe: '正常',
-          l_problemtybe: 'ທຳ ມະດາ',
+          c_problemtybe: '',
+          l_problemtybe: '',
 
           c_log_note: '',
           l_log_note: '',
@@ -394,7 +388,6 @@
         rules: {
           o_id: [
             {required: true, message: '请输入单号', trigger: 'blur'},
-            {min: 13, max: 13, message: '单号长度为13位', trigger: 'blur'},
             {validator: validateOrder, trigger: 'blur'}
           ],
 
@@ -538,15 +531,6 @@
         let width = this.width;
         let height = this.height;
         this.form.o_volume = length * width * height / 5000
-      },
-
-      // 选择物品状态
-      changeType(value) {
-        if (value === '正常') {
-          this.form.l_problemtybe = 'ທຳ ມະດາ'
-        } else {
-          this.form.l_problemtybe = 'ປັນຫາ'
-        }
       },
 
       //  选择快递员

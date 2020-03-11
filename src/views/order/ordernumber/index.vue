@@ -302,8 +302,8 @@
                 this.isGiveLoading = false;
                 return;
               }
-              if (data.endNumber - data.firstNumber > 500) {
-                this.$errorMsg('一次录入不得超过500条');
+              if (data.endNumber - data.firstNumber > 1000) {
+                this.$errorMsg('一次分配不得超过1000条');
                 this.isGiveLoading = false;
                 return;
               }
@@ -364,8 +364,8 @@
                 this.isImportantLoading = false;
                 return;
               }
-              if (data.endNumber - data.firstNumber > 500) {
-                this.$errorMsg('一次录入不得超过500条');
+              if (data.endNumber - data.firstNumber > 10000) {
+                this.$errorMsg('一次录入不得超过10000条');
                 this.isImportantLoading = false;
                 return;
               }
