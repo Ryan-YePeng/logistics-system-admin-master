@@ -1,24 +1,15 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card" v-loading="isLoading">
     <div slot="header" class="clearfix">
       <span>单号管理</span>
     </div>
     <div>
-      <el-form :model="form1" :rules="rules1" ref="Form1" inline label-width="100px" hide-required-asterisk
-               v-if="authority==='level0' || authority==='level'">
-        <el-form-item label="单号录入" prop="firstNumber">
-          <el-input v-model="form1.firstNumber" placeholder="开始号码" clearable></el-input>
-        </el-form-item>
-        <el-form-item prop="endNumber">
-          <el-input v-model="form1.endNumber" placeholder="结束号码" clearable></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="importOrder" :loading="isImportantLoading">录入</el-button>
-        </el-form-item>
-        <el-form-item style="float: right">
-          <el-button type="success" @click="checkHadInputOrder">查看已录入的单号</el-button>
-        </el-form-item>
-      </el-form>
+      <import-order
+              v-if="authority==='level0' || authority==='level'"
+              @updateGiveSection="getCanGiveSection"
+              :authority="authority"
+              :userId="userId"
+              :role="role"/>
       <el-form :model="form2" :rules="rules2" ref="Form2" inline label-width="100px" hide-required-asterisk
                v-if="authority !=='level2'">
         <el-form-item label="订单分配" prop="firstNumber">
@@ -56,58 +47,40 @@
           <el-button type="primary" @click="giveOrder" :disabled="isCanGive" :loading="isGiveLoading">分配</el-button>
         </el-form-item>
       </el-form>
+      <el-dialog
+              title="单号分配中..."
+              width="700px"
+              :close-on-click-modal="false"
+              :show-close='false'
+              :visible.sync="isGiveLoading">
+        <el-progress :text-inside="true" :stroke-width="26" :percentage="percentage"></el-progress>
+        <div style="padding-bottom: 30px"></div>
+      </el-dialog>
       <el-form>
         <el-form-item label-width="100px" label="可用单号">
           <pre class="my-pre-wrap">{{canGiveList}}</pre>
         </el-form-item>
       </el-form>
-      <el-dialog
-              title="已录入的单号"
-              width="700px"
-              fullscreen
-              :visible.sync="dialogTableVisible">
-        <div>
-          <span v-for="item in canNotUsedList">{{item.q_start}}~{{item.q_end}}, </span>
-        </div>
-      </el-dialog>
     </div>
   </el-card>
 </template>
 
 <script>
   import {
-    addNumberApi, getMySiteApi, giveNumberApi,
-    getNumberApi, getMyNumberApi
+    getMySiteApi, giveNumberApi,
+    getMyNumberApi
   } from '@/api/number'
   import {searchSiteApi} from "@/api/site";
   import {validateThirteenNumber} from "@/utils/validate";
   import {isEmpty} from "@/utils/common";
+  import ImportOrder from './import'
 
   export default {
     name: "OrderNumber",
+    components: {ImportOrder},
     data() {
       return {
-        /* 录入 */
-        dialogTableVisible: false,
-        // siteList: [], // 下级网点列表
-
-        isImportantLoading: false,
-        canNotUsedList: [], // 不能录入的区间
-        form1: {
-          firstNumber: '',
-          endNumber: ''
-        },
-        rules1: {
-          firstNumber: [
-            {required: true, message: '请输入开始号码', trigger: 'blur'},
-            {validator: validateThirteenNumber, trigger: 'blur'}
-          ],
-          endNumber: [
-            {required: true, message: '请输入结束号码', trigger: 'blur'},
-            {validator: validateThirteenNumber, trigger: 'blur'}
-          ]
-        },
-
+        isLoading: true,
         /* 分配 */
         canGiveSection: [], // 可分配区间
         isGiveLoading: false,
@@ -127,6 +100,12 @@
           ],
           to_id: {required: true, message: '请选择网点', trigger: 'change'}
         },
+
+        /* 分批 */
+        giveDataList: [],
+        giveTimer: 0,
+        timer: 0,
+        /* 分批 */
 
         /* 模糊搜索 */
         searchLoading: false,
@@ -157,7 +136,7 @@
       canGiveList() { // 可用单号 显示
         let list = this.canGiveSection;
         if (list.length === 0) {
-          return '暂无'
+          return ' '
         } else {
           let str = '';
           list.forEach(item => {
@@ -176,11 +155,15 @@
       },
       isCanGive() {
         return this.canGiveSection.length === 0;
+      },
+      percentage() {
+        let timer = this.timer;
+        let importTimer = this.giveTimer;
+        if (this.timer === 0) return 0;
+        return Math.ceil(timer / importTimer * 100)
       }
     },
     mounted() {
-      // this.getMySite(); // 获得下级网点
-      this.getNumber(); // 获得已经录入过的区间
       this.getCanGiveSection(); // 获得可用的单号
     },
     methods: {
@@ -226,20 +209,6 @@
       },
       /* 模糊搜索网点 */
 
-      // 查看已录入的单号
-      checkHadInputOrder() {
-        this.dialogTableVisible = true
-      },
-
-      // // 选择网点
-      // selectSite(id) {
-      //   this.siteList.some(item => {
-      //     if (item.u_id === id) {
-      //       this.siteObj = item;
-      //       return true
-      //     }
-      //   })
-      // },
       // 补零函数
       addO(value) {
         value = value + '';
@@ -257,6 +226,11 @@
           let response = result.data.message;
           if (response.length === 0) {
             this.isGiveLoading = false;
+            this.isLoading = false;
+            /* 进度条 */
+            this.giveDataList = [];
+            this.giveTimer = 0;
+            this.timer = 0;
           }
           let start = response.shift();
           let last = start;
@@ -279,6 +253,11 @@
           });
           this.canGiveSection = list;
           this.isGiveLoading = false;
+          this.isLoading = false;
+          /* 进度条 */
+          this.giveDataList = [];
+          this.giveTimer = 0;
+          this.timer = 0;
         })
       },
       // 分配订单
@@ -302,8 +281,8 @@
                 this.isGiveLoading = false;
                 return;
               }
-              if (data.endNumber - data.firstNumber > 1000) {
-                this.$errorMsg('一次分配不得超过1000条');
+              if (data.endNumber - data.firstNumber > 15000) {
+                this.$errorMsg('一次分配不得超过15000条');
                 this.isGiveLoading = false;
                 return;
               }
@@ -316,11 +295,30 @@
                 return
               }
               data.name = this.siteObj.c__branchesName;
-              giveNumberApi(data).then(() => {
-                Object.assign(this.$data.form2, this.$options.data().form2);
-                this.$refs['Form2'].resetFields();
-                this.getCanGiveSection();
-              })
+              /* 分批请求 */
+              let temp = (data.endNumber - data.firstNumber) / 500;
+              let timer = Math.floor(temp);
+              let start = data.firstNumber;
+              let end = data.endNumber;
+              for (let i = 0; i <= timer; i++) {
+                let obj = {};
+                obj.to_id = data.to_id;
+                obj.u_id = data.u_id;
+                obj.name = data.name;
+                obj.i = data.i;
+                if (i + 1 === timer) {
+                  obj.firstNumber = start;
+                  obj.endNumber = end;
+                  this.giveDataList.push(obj);
+                  break
+                }
+                obj.firstNumber = start;
+                obj.endNumber = start + 499;
+                start = start + 500;
+                this.giveDataList.push(obj)
+              }
+              this.giveTimer = this.giveDataList.length - 1;
+              this.startGive()
             })
           } else {
             return false;
@@ -328,72 +326,42 @@
         });
       },
 
-
-      // // 获得下级网点
-      // getMySite() {
-      //   if (this.authority === 'level2') return;
-      //   let param = `pageNumber=1&pageCount=999999&s=&u_id=${this.userId}&role=${this.role}`;
-      //   getMySiteApi(param).then(result => {
-      //     let data = result.data.message;
-      //     if (typeof (data) === 'string') {
-      //       this.siteList = []
-      //     } else {
-      //       this.siteList = data
-      //     }
-      //   })
-      // },
-      // 获得已经录入过的区间
-      getNumber() {
-        if (this.authority !== 'level' && this.authority !== 'level0') return;
-        getNumberApi().then(result => { // 获得不可用区间
-          this.canNotUsedList = result.data.message;
-          this.isImportantLoading = false;
+      startGive() {
+        giveNumberApi(this.giveDataList[this.timer]).then(result => {
+          if (result.data.status === 200 && this.timer < this.giveTimer) {
+            this.timer = this.timer + 1;
+            this.startGive();
+          } else {
+            this.endGiveSuccess();
+          }
+        }).catch(() => {
+          this.endGiveError();
         })
       },
-      // 单号录入
-      importOrder() {
-        this.$refs['Form1'].validate((valid) => {
-          if (valid) {
-            this.$msgBox().then(() => {
-              this.isImportantLoading = true;
-              let data = {...this.form1};
-              data.firstNumber = data.firstNumber / 1;
-              data.endNumber = data.endNumber / 1;
-              if (data.firstNumber > data.endNumber) {
-                this.$errorMsg('结束号码不得小于开始号码');
-                this.isImportantLoading = false;
-                return;
-              }
-              if (data.endNumber - data.firstNumber > 10000) {
-                this.$errorMsg('一次录入不得超过10000条');
-                this.isImportantLoading = false;
-                return;
-              }
-              let isHas = this.canNotUsedList.some(item => {
-                return data.firstNumber <= item.q_start && data.endNumber >= item.q_start
-                    || data.firstNumber >= item.q_start && data.endNumber <= item.q_end
-                    || data.firstNumber <= item.q_end && data.endNumber >= item.q_end
-                    || data.firstNumber <= item.q_start && data.endNumber >= item.q_end;
-              });
-              if (isHas) {
-                this.$errorMsg('该区间存在已被录入过的单号，请换一个区间');
-                this.isImportantLoading = false;
-                return
-              }
-              data.u_id = this.userId;
-              data.role = this.role;
-              addNumberApi(data).then(() => {
-                Object.assign(this.$data.form1, this.$options.data().form1);
-                this.$refs['Form1'].resetFields();
-                this.getNumber();
-                this.getCanGiveSection();
-              })
-            })
-          } else {
-            return false;
-          }
-        });
+
+      endGiveSuccess() {
+        this.$successMsg('分配完成');
+        this.giveTimer = 1;
+        this.timer = 1;
+        window.setTimeout(() => {
+          Object.assign(this.$data.form2, this.$options.data().form2);
+          this.$refs['Form2'].resetFields();
+          this.getCanGiveSection();
+          // this.giveDataList = [];
+          // this.giveTimer = 0;
+          // this.timer = 0;
+        }, 1000)
       },
+
+      endGiveError() {
+        this.$errorMsg('分配中发生错误，已终止');
+        Object.assign(this.$data.form2, this.$options.data().form2);
+        this.$refs['Form2'].resetFields();
+        this.getCanGiveSection();
+        this.giveDataList = [];
+        this.giveTimer = 0;
+        this.timer = 0;
+      }
     }
   }
 </script>

@@ -35,8 +35,8 @@
           <el-form-item label="网点级别" prop="i">
             <el-select v-model="form.i" placeholder="请选择网点级别">
               <el-option v-if="role == 'level'" label="总部" value="0"></el-option>
-              <el-option v-if="role == 'level0' || role == 'level'" label="省级" value="1"></el-option>
-              <el-option v-if="role == 'level1' || role == 'level'" label="县级" value="2"></el-option>
+              <el-option v-if="role == 'level0' || role == 'level'" label="一级网点" value="1"></el-option>
+              <el-option v-if="role == 'level1' || role == 'level'" label="二级网点" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="网点账号" prop="username">

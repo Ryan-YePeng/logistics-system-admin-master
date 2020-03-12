@@ -5,7 +5,10 @@
         已分配单号列表
       </div>
       <div>
-        <el-table v-loading="isWithdrawLoading" :data="hadGivenList">
+        <el-table
+                v-loading="isWithdrawLoading"
+                element-loading-text="拼命撤回中"
+                :data="hadGivenList">
           <el-table-column prop="r_start" label="开始号码">
             <template slot-scope="scope">
               <span>{{addO(scope.row.r_start)}}</span>
@@ -71,7 +74,9 @@
           data.endNumber = obj.r_end / 1;
           data.u_id = this.userId;
           data.role = this.role;
+          this.isWithdrawLoading = true;
           withdrawApi(data).then(() => {
+            this.isWithdrawLoading = false;
             this.getHadGiven();
           })
         });
@@ -80,10 +85,8 @@
       getHadGiven() {
         this.hadGivenList = [];
         let param = `u_id=${this.userId}&role=${this.role}`;
-        this.isWithdrawLoading = true;
         getHadGivenApi(param).then(result => {
-          this.hadGivenList = result.data.message;
-          this.isWithdrawLoading = false;
+          this.hadGivenList = result.data.message
         })
       },
       // 补零函数

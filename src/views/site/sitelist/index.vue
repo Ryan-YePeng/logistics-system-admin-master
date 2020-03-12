@@ -39,8 +39,8 @@
             <template slot-scope="scope">
               <span v-if="scope.row.authorities[0].authority == 'level'">超管</span>
               <span v-if="scope.row.authorities[0].authority == 'level0'">总部</span>
-              <span v-if="scope.row.authorities[0].authority == 'level1'">省</span>
-              <span v-if="scope.row.authorities[0].authority == 'level2'">县</span>
+              <span v-if="scope.row.authorities[0].authority == 'level1'">一级网点</span>
+              <span v-if="scope.row.authorities[0].authority == 'level2'">二级网点</span>
             </template>
           </el-table-column>
 

@@ -9,7 +9,7 @@ import store from '@/store'
 let errorStatus = null;
 
 const service = axios.create({
-  timeout: 40000,
+  timeout: 120000,
   baseURL: process.env.VUE_APP_BASE_API,
   withCredentials: true
 });

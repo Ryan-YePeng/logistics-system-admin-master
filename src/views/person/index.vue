@@ -21,8 +21,8 @@
           <span>级别</span>
           <span v-if="level == 'level'">超管</span>
           <span v-if="level == 'level0'">总部</span>
-          <span v-if="level == 'level1'">省级</span>
-          <span v-if="level == 'level2'">县级</span>
+          <span v-if="level == 'level1'">一级网点</span>
+          <span v-if="level == 'level2'">二级网点</span>
         </li>
         <li>
           <span>网点名称(中)</span>

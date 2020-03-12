@@ -210,7 +210,7 @@ module.exports = {
     }
   ],
   /**
-   * @description level1菜单 省级
+   * @description level1菜单 一级网点
    */
   menu_level1: [
     {
@@ -271,7 +271,7 @@ module.exports = {
     }
   ],
   /**
-   * @description level2菜单 县级
+   * @description level2菜单 二级网点
    */
   menu_level2: [
     {
