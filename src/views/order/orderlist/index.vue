@@ -476,8 +476,6 @@
         _this.form.l_co_contact = lastItem.l_co_contact;
         // _this.form.c_log_branches = lastItem.c_log_branches;
         // _this.form.l_log_branches = lastItem.l_log_branches;
-        // _this.form.c_problemtybe = lastItem.c_problemtybe;
-        // _this.form.l_problemtybe = lastItem.l_problemtybe;
         // _this.form.c_problem = lastItem.c_problem;
         // _this.form.l_problem = lastItem.l_problem;
 

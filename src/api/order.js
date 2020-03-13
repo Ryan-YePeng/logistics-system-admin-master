@@ -1,4 +1,4 @@
-import {axiosds, axiosG, axiosK, axiosL} from './request'
+import {axiosds, axiosG, axiosK, axiosL, axiosP} from './request'
 
 // 录入更改订单
 const editOrderUrl = 'hdd/addL_order';
@@ -39,9 +39,27 @@ export function exportOrderApi(data) {
       })
 }
 
-// 通过单号获取id
+// 通过单号获取id (未编辑过的)
 const getIdByOrderUrl = 'hdd/getO_id?';
 
 export function getIdByOrderApi(data) {
   return axiosG(getIdByOrderUrl + data)
+}
+
+/**
+ * @module 批量编辑订单
+ * */
+
+// 通过单号获取id (已经编辑过的)
+const getIdByOrderHadEditedUrl = 'hdd/getIDwhoBEUse?s=';
+
+export function getIdByOrderHadEditedApi(data) {
+  return axiosG(getIdByOrderHadEditedUrl + data)
+}
+
+//  批量修改订单
+const editMoreOrderUrl = 'hdd/moreWULIU';
+
+export function editMoreOrderApi(data) {
+  return axiosK(editMoreOrderUrl, data)
 }

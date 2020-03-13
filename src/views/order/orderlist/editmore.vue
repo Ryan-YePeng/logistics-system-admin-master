@@ -3,6 +3,7 @@
     <el-dialog
             title="批量更新订单"
             @close="cancel"
+            :destroy-on-close="true"
             fullscreen
             :close-on-click-modal="false"
             :visible.sync="dialogTableVisible">
@@ -129,7 +130,7 @@
 </template>
 
 <script>
-  import {editOrderApi, getIdByOrderApi} from '@/api/order'
+  import {editMoreOrderApi, getIdByOrderHadEditedApi} from '@/api/order'
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
 
@@ -154,9 +155,6 @@
         form: {
           c_log_state: '', // 状态
           l_log_state: '', // 状态
-
-          c_problemtybe: '',
-          l_problemtybe: '',
 
           c_log_note: '',
           l_log_note: '',
@@ -226,17 +224,17 @@
           key: Date.now()
         });
       },
-      validateOrder(rule, value, callback) {
+      validateOrder(rule, value, callback) { // 验证单号 获取o_id
         value = value.trim();
-        let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.role}`;
+        let param = `${value}`;
         if (value.length !== 13) {
           callback(new Error('请输入长度为13的单号'));
           return
         }
-        getIdByOrderApi(param).then(result => {
+        getIdByOrderHadEditedApi(param).then(result => {
           let message = result.data.message;
           if (message === 0) {
-            callback(new Error('此订单号不可使用,请更换一个订单号'))
+            callback(new Error('找不到该订单,请重新输入订单号'))
           } else {
             this.dynamicValidateForm.domains.some(item => {
               let temp = item.value.trim();
@@ -272,10 +270,8 @@
                   list.push(item.o_id)
                 }
               });
-              data._oid = list.join(',');
-              console.log(data);
-              return
-              editOrderApi(data).then(() => {
+              data.id = list.join(',');
+              editMoreOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()
               });
@@ -367,10 +363,11 @@
       // 关闭
       cancel() {
         this.dialogTableVisible = false;
+        this.siteNameOptions = [];
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].resetFields();
-        this.$refs['dynamicValidateForm'].resetFields();
         Object.assign(this.$data.dynamicValidateForm, this.$options.data().dynamicValidateForm);
+        //this.$refs['dynamicValidateForm'].resetFields();
       }
     }
   }

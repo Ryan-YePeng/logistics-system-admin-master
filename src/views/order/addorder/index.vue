@@ -366,9 +366,6 @@
           c_log_state: '揽收', // 状态
           l_log_state: 'ເກັບ ກຳ', // 状态
 
-          c_problemtybe: '',
-          l_problemtybe: '',
-
           c_log_note: '',
           l_log_note: '',
 
@@ -466,14 +463,14 @@
       }
     },
     mounted() {
-      let param = `u_id=${this.userId}&role=${this.role}&pageNumber=1&pageCount=99999&s=`;
-      getCourierApi(param).then(result => {
-        this.courierList = result.data.message
-      });
       this.form.c_log_branches = this.user.c__branchesName;
       this.form.l_log_branches = this.user.l_branchesName;
       this.form.c_o_provenance = this.user.c_br_address;
       this.form.l_o_provenance = this.user.l_br_address;
+      let param = `u_id=${this.userId}&role=${this.role}&pageNumber=1&pageCount=99999&s=`;
+      getCourierApi(param).then(result => {
+        this.courierList = result.data.message
+      });
     },
     methods: {
       /* 模糊搜索网点 */

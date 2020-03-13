@@ -342,9 +342,6 @@
           c_log_state: '揽收', // 状态
           l_log_state: 'ເກັບ ກຳ', // 状态
 
-          c_problemtybe: '',
-          l_problemtybe: '',
-
           c_log_note: '',
           l_log_note: '',
 
