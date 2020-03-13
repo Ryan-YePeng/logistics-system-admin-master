@@ -111,6 +111,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             let data = {...this.form};
+            if (!this.isChangePassword) data.password = '';
             updateSiteApi(data).then(() => {
               this.$emit('update');
               this.cancel()
@@ -122,6 +123,7 @@
       },
       cancel() {
         this.dialogTableVisible = false;
+        this.isChangePassword = false;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].resetFields()
       }

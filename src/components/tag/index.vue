@@ -2,23 +2,23 @@
   <div class="tags-view-container">
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
       <router-link
-        v-for="tag in tags"
-        ref="tag"
-        :class="isActive(tag.path) ? 'active' : ''"
-        :key="tag.path"
-        :to='{name: tag.path}'
-        tag="span"
-        class="tags-view-item"
-        @click.native="tabsClick(tag)"
-      >
-        <span @contextmenu.prevent="$refs.ctxshow.showMenu($event, tag)">{{ tag.title }}</span>
+              v-for="tag in tags"
+              ref="tag"
+              :class="isActive(tag.path) ? 'active' : ''"
+              :key="tag.path"
+              :to='{name: tag.path}'
+              tag="span"
+              class="tags-view-item"
+              @contextmenu.prevent.native="$refs.ctxshow.showMenu($event, tag)"
+              @click.prevent.native="tabsClick(tag)">
+        <span>{{tag.title}}</span>
         <span v-if="tag.title !== '首页'" class="el-icon-close" @click.prevent.stop="tabsRemove(tag)"></span>
       </router-link>
     </scroll-pane>
     <e-vue-contextmenu
-      ref="ctxshow"
-      class="contextmenu"
-      @ctx-show="show">
+            ref="ctxshow"
+            class="contextmenu"
+            @ctx-show="show">
       <ul>
         <li @click="refresh()">刷新</li>
         <li v-if="selectedMenu !== '首页'" @click="closeRight()">关闭右侧</li>
@@ -86,8 +86,8 @@
         }
         let nextIndex;
         index === this.tags.length - 1
-          ? nextIndex = index - 1
-          : nextIndex = index + 1;
+            ? nextIndex = index - 1
+            : nextIndex = index + 1;
         let nextObj = this.tags[nextIndex];
         this.$router.push({name: nextObj.path});
         // 改变激活菜单
@@ -100,10 +100,10 @@
       // 初始化当前滚动高度
       initialScrollTop(isIntial = false) {
         isIntial
-          ? document.querySelector('.top').scrollTop = this.$store.getters.scrollTop
-          : setTimeout(() => {
-            document.querySelector('.top').scrollTop = 0
-          }, 700)
+            ? document.querySelector('.top').scrollTop = this.$store.getters.scrollTop
+            : setTimeout(() => {
+              document.querySelector('.top').scrollTop = 0
+            }, 700)
       },
       // 右键菜单打开回调 (data数据类型为: object)
       show(data) {
@@ -126,7 +126,7 @@
         let obj = [...this.tags];
         obj.forEach(item => {
           if (item.title !== '首页'
-            && item.title !== this.selectedMenu) {
+              && item.title !== this.selectedMenu) {
             this.tabsRemove(item)
           }
         });
@@ -138,10 +138,9 @@
         for (let i = obj.length - 1; i >= 0; i--) {
           let title = obj[i].title;
           if (title !== '首页'
-            && title !== this.selectedMenu) {
+              && title !== this.selectedMenu) {
             this.tabsRemove(obj[i]);
-          }
-          else if (title === this.selectedMenu) {
+          } else if (title === this.selectedMenu) {
             break
           }
         }
@@ -162,6 +161,7 @@
     background: #fff;
     border-bottom: 1px solid #d8dce5;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+
     .tags-view-wrapper {
       .tags-view-item {
         display: inline-block;
@@ -176,16 +176,20 @@
         font-size: 12px;
         margin-left: 5px;
         margin-top: 4px;
+
         &:first-of-type {
           margin-left: 15px;
         }
+
         &:last-of-type {
           margin-right: 15px;
         }
+
         &.active {
           background-color: #409eff;
           color: #fff;
           border-color: #409eff;
+
           &::before {
             content: '';
             background: #fff;
@@ -199,6 +203,7 @@
         }
       }
     }
+
     .contextmenu {
       margin: 0;
       background: #fff;
@@ -208,10 +213,12 @@
       font-weight: 400;
       color: #333;
       box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+
       li {
         margin: 0;
         padding: 7px 16px;
         cursor: pointer;
+
         &:hover {
           background: #eee;
         }
@@ -225,6 +232,7 @@
   .tags-view-wrapper {
     .tags-view-item {
       user-select: none;
+
       .el-icon-close {
         width: 16px;
         height: 16px;
@@ -233,11 +241,13 @@
         text-align: center;
         transition: all .3s cubic-bezier(.645, .045, .355, 1);
         transform-origin: 100% 50%;
+
         &:before {
           transform: scale(.6);
           display: inline-block;
           vertical-align: -3px;
         }
+
         &:hover {
           background-color: #b4bccc;
           color: #fff;
