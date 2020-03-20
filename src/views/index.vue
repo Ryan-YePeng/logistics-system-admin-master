@@ -22,10 +22,11 @@
             <el-dropdown trigger="click" style="cursor: pointer">
               <div class="avatar-box">
                 <el-avatar shape="square" :size="45">
-                  <img v-if="level == 'level'" src="../assets/level.jpg" alt="头像"/>
-                  <img v-if="level == 'level0'" src="../assets/level0.jpg" alt="头像"/>
-                  <img v-if="level == 'level1'" src="../assets/level1.jpg" alt="头像"/>
-                  <img v-if="level == 'level2'" src="../assets/level2.jpg" alt="头像"/>
+                  <img v-if="user.is_special" src="../assets/special.jpg" alt="头像"/>
+                  <img v-else-if="level == 'level'" src="../assets/level.jpg" alt="头像"/>
+                  <img v-else-if="level == 'level0'" src="../assets/level0.jpg" alt="头像"/>
+                  <img v-else-if="level == 'level1'" src="../assets/level1.jpg" alt="头像"/>
+                  <img v-else src="../assets/level2.jpg" alt="头像"/>
                 </el-avatar>
                 <i class="el-icon-caret-bottom el-icon--right"></i>
                 <el-dropdown-menu slot="dropdown">
@@ -89,6 +90,9 @@
       'level': function () {
         let data = this.$store.getters.user;
         return data.authorities[0]['authority']
+      },
+      user() {
+        return this.$store.getters.user
       }
     },
     watch: {

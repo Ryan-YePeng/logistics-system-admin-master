@@ -37,10 +37,11 @@
           </el-table-column>
           <el-table-column label="级别">
             <template slot-scope="scope">
-              <span v-if="scope.row.authorities[0].authority == 'level'">超管</span>
-              <span v-if="scope.row.authorities[0].authority == 'level0'">总部</span>
-              <span v-if="scope.row.authorities[0].authority == 'level1'">一级网点</span>
-              <span v-if="scope.row.authorities[0].authority == 'level2'">二级网点</span>
+              <span v-if="scope.row.is_special">特殊</span>
+              <span v-else-if="scope.row.authorities[0].authority == 'level'">超管</span>
+              <span v-else-if="scope.row.authorities[0].authority == 'level0'">总部</span>
+              <span v-else-if="scope.row.authorities[0].authority == 'level1'">一级网点</span>
+              <span v-else="scope.row.authorities[0].authority == 'level2'">二级网点</span>
             </template>
           </el-table-column>
 

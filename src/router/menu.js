@@ -317,6 +317,47 @@ module.exports = {
         }
       ]
     }
+  ],
+  /**
+   * @description level菜单 特殊账号
+   */
+  menu_special: [
+    {
+      "name": "订单管理",
+      "icon": "order",
+      "path": "order",
+      "component": "order",
+      "children": [
+        {
+          "name": "添加订单",
+          "icon": "addorder",
+          "path": "addorderspecial",
+          "component": "addorderspecial",
+          "children": []
+        },
+        {
+          "name": "订单列表",
+          "icon": "orderlist",
+          "path": "orderlist",
+          "component": "orderlist",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "网点管理",
+      "icon": "site",
+      "path": "site",
+      "component": "site",
+      "children": [
+        {
+          "name": "快递员列表",
+          "icon": "courier",
+          "path": "courier",
+          "component": "courier"
+        }
+      ]
+    }
   ]
 };
 

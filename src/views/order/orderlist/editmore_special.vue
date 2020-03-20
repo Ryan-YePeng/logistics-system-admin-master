@@ -1,8 +1,6 @@
 <template>
   <div id="edit-order-more">
     <el-dialog
-            v-loading="isGetIdLoading"
-            element-loading-text="查找订单中，请稍后..."
             title="批量更新订单"
             @close="cancel"
             :destroy-on-close="true"
@@ -118,30 +116,13 @@
 </template>
 
 <script>
-  import {editMoreOrderApi, getIdByOrderHadEditedApi} from '@/api/order'
+  import {editMoreOrderApi} from '@/api/order'
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
 
   export default {
-    name: "EditOrderMore",
+    name: "EditOrderMoreSpecial",
     data() {
-      // let validateOrderFirst = (rule, value, callback) => {
-      //   value = value.trim();
-      //   const reg = /^\d+$/;
-      //   let length = value.length;
-      //   if (value === '' || value === undefined || value == null) {
-      //     callback(new Error('请输入单号'))
-      //   } else {
-      //     if ((!reg.test(value)) && value !== '') {
-      //       callback(new Error('只能录入数字'))
-      //     } else if (length % 13 !== 0) {
-      //       callback(new Error('单号录入不完整'))
-      //     } else {
-      //       this.getId(value);
-      //       callback()
-      //     }
-      //   }
-      // };
       let validateOrderFirst = (rule, value, callback) => {
         value = value.trim();
         if (value === '' || value === undefined || value == null) {
@@ -176,10 +157,6 @@
           ]
         },
         orderList: [],
-        orderListLength: 0,
-        times: 0,
-        ids: [],
-        isGetIdLoading: false,
         form: {
           c_log_state: '', // 状态
           l_log_state: '', // 状态
@@ -235,44 +212,29 @@
     },
     methods: {
       getId(value) {
-        this.orderList = value;
-        this.orderListLength = value.length;
-        this.times = 0;
-        this.ids = [];
-        this.get();
-        this.isGetIdLoading = true
-      },
-
-      get() {
-        let number = this.orderList[this.times];
-        getIdByOrderHadEditedApi(number).then(result => {
-          if (result.data.message !== 0) {
-            this.ids.push(number);
-          } else {
-            this.$errorMsg('单号:' + number + '找不到')
+        let temp = [];
+        let l = value.length;
+        for (let i = 0; i < l; i++) {
+          for (let j = i + 1; j < l; j++) {
+            if (value[i] === value[j]) {
+              i++;
+              j = i;
+            }
           }
-          this.times++;
-          if (this.times < this.orderListLength) {
-            this.get()
-          } else {
-            this.isGetIdLoading = false
-          }
-        })
+          temp.push(value[i]);
+        }
+        this.orderList = temp
       },
 
       // 提交
       submitForm() {
-        if (this.ids.length === 0) {
-          this.$errorMsg('所有单号都找不到，请重新输入！');
-          return
-        }
         this.$refs['Form'].validate((valid) => {
           if (valid) {
             this.$msgBox('确认提交？').then(() => {
               let data = {...this.form};
+              data.string = this.orderList.join(',');
               data.l_id = this.userId;
-              data.i = 0;
-              data.string = this.ids.join(',');
+              data.i = 1;
               editMoreOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()

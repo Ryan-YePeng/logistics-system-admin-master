@@ -219,7 +219,6 @@
       },
 
       getCanGiveSection() { // 获得可分配单号
-        if (this.authority === 'level2') return;
         this.canGiveSection = [];
         let param = `u_id=${this.userId}&role=${this.role}`;
         getMyNumberApi(param).then(result => {
@@ -298,6 +297,7 @@
               /* 分批请求 */
               let temp = (data.endNumber - data.firstNumber) / 500;
               let timer = Math.floor(temp);
+              if (timer === 0) timer = 1;
               let start = data.firstNumber;
               let end = data.endNumber;
               for (let i = 0; i <= timer; i++) {

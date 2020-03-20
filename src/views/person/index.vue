@@ -6,10 +6,11 @@
       </div>
       <div style="text-align: center; margin-bottom: 20px">
         <el-avatar shape="circle" :size="120">
-          <img v-if="level == 'level'" src="../../assets/level.jpg" alt="头像"/>
-          <img v-if="level == 'level0'" src="../../assets/level0.jpg" alt="头像"/>
-          <img v-if="level == 'level1'" src="../../assets/level1.jpg" alt="头像"/>
-          <img v-if="level == 'level2'" src="../../assets/level2.jpg" alt="头像"/>
+          <img v-if="user.is_special" src="../../assets/special.jpg" alt="头像"/>
+          <img v-else-if="level == 'level'" src="../../assets/level.jpg" alt="头像"/>
+          <img v-else-if="level == 'level0'" src="../../assets/level0.jpg" alt="头像"/>
+          <img v-else-if="level == 'level1'" src="../../assets/level1.jpg" alt="头像"/>
+          <img v-else src="../../assets/level2.jpg" alt="头像"/>
         </el-avatar>
       </div>
       <ul class="personInfo">
@@ -19,10 +20,11 @@
         </li>
         <li>
           <span>级别</span>
-          <span v-if="level == 'level'">超管</span>
-          <span v-if="level == 'level0'">总部</span>
-          <span v-if="level == 'level1'">一级网点</span>
-          <span v-if="level == 'level2'">二级网点</span>
+          <span v-if="user.is_special">特殊</span>
+          <span v-else-if="level == 'level'">超管</span>
+          <span v-else-if="level == 'level0'">总部</span>
+          <span v-else-if="level == 'level1'">一级网点</span>
+          <span v-else>二级网点</span>
         </li>
         <li>
           <span>网点名称(中)</span>

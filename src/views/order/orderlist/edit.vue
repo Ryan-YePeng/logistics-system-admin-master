@@ -8,7 +8,7 @@
             :visible.sync="dialogTableVisible">
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
 
-        <el-collapse>
+        <el-collapse v-if="authority === 'level' || form.l_id === userId">
           <el-collapse-item title="订单详情" name="1">
             <el-row>
               <el-col :span="12">
@@ -288,6 +288,7 @@
         ],
         form: {
           o_id: 0,
+          l_id: 0,
 
           c_o_startName: '', // 寄件人姓名
           c_o_provenance: '', // 始发地
@@ -400,7 +401,10 @@
     computed: {
       userId() {
         return this.$store.getters.userId
-      }
+      },
+      authority() {
+        return this.$store.getters.user.authorities[0]['authority'];
+      },
     },
     methods: {
       /* 模糊搜索网点 */
@@ -487,6 +491,7 @@
           if (valid) {
             this.$msgBox('确认提交？').then(() => {
               let data = {...this.form};
+              data.i = 0;
               editOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()

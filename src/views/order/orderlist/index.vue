@@ -43,7 +43,7 @@
         <el-button type="warning" @click="clearAll">复原</el-button>
       </div>
       <el-button v-if="isLevel" :disabled="isDeleteMoreDisabled" type="danger" @click="deleteMore">批量删除</el-button>
-      <el-button type="success" @click="exportExcel">导出订单</el-button>
+      <export-order style="display: inline-block;margin: 0 20px" :userId="userId"/>
       <el-button type="primary" @click="editMore">批量编辑</el-button>
       <div>
         <el-table
@@ -364,7 +364,8 @@
                              @click.stop="deleteOrder(scope.row.o_id)">确定
                   </el-button>
                 </div>
-                <el-button v-if="isLevel" slot="reference" type="danger" icon="el-icon-delete" size="mini" @click.stop/>
+                <el-button v-if="isLevel" slot="reference" type="danger" icon="el-icon-delete" size="mini"
+                           @click.stop/>
               </el-popover>
             </template>
           </el-table-column>
@@ -373,21 +374,26 @@
       </div>
     </el-card>
     <edit-order ref="EditOrder" @update="searchOrder" :courierList="courierList"></edit-order>
-    <edit-order-more ref="EditOrderMore" @update="searchOrder" :courierList="courierList"></edit-order-more>
+    <edit-order-more v-if="!isSpecial" ref="EditOrderMore" @update="searchOrder"
+                     :courierList="courierList"></edit-order-more>
+    <edit-more-special v-if="isSpecial" ref="EditOrderMoreSpecial" @update="searchOrder"
+                       :courierList="courierList"></edit-more-special>
   </div>
 </template>
 
 <script>
-  import {deleteOrderApi, searchOrderApi, exportOrderApi} from '@/api/order'
+  import {deleteOrderApi, searchOrderApi} from '@/api/order'
   import {getCourierApi} from '@/api/courier'
   import EditOrder from './edit'
   import EditOrderMore from './editmore'
+  import ExportOrder from './exportorder'
   import pagination from '@/components/pagination'
+  import EditMoreSpecial from './editmore_special'
   import {objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Order',
-    components: {EditOrder, pagination, EditOrderMore},
+    components: {EditOrder, pagination, EditOrderMore, ExportOrder, EditMoreSpecial},
     data() {
       return {
         formData: [],
@@ -406,6 +412,9 @@
       }
     },
     computed: {
+      isSpecial() {
+        return this.$store.getters.user.is_special;
+      },
       isLevel() {
         let authority = this.$store.getters.user.authorities[0]['authority'];
         return authority === 'level';
@@ -485,8 +494,8 @@
         _this.dialogTableVisible = true
       },
       exportExcel() {
-        let param = `u_id=${this.userId}&i=${this.i}`;
-        exportOrderApi(param)
+        // let param = `u_id=${this.userId}&i=${this.i}&time=${}&s1=${}&s2${}`;
+        // exportOrderApi(param)
       },
       deleteOrder(id) {
         this.isDeleteLoading = true;
@@ -524,7 +533,12 @@
         this.searchOrder();
       },
       editMore() {
-        let _this = this.$refs.EditOrderMore;
+        let _this;
+        if (this.isSpecial) {
+          _this = this.$refs.EditOrderMoreSpecial;
+        } else {
+          _this = this.$refs.EditOrderMore;
+        }
         _this.form.c_log_branches = this.user.c__branchesName;
         _this.form.l_log_branches = this.user.l_branchesName;
         _this.dialogTableVisible = true

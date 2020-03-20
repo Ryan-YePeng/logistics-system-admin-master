@@ -7,8 +7,8 @@
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="单号:" prop="o_id">
-              <el-input v-model="form.o_id" length="13"></el-input>
+            <el-form-item label="单号:" prop="l_o_orderNumber">
+              <el-input v-model="form.l_o_orderNumber"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -279,40 +279,22 @@
 </template>
 
 <script>
-  import {editOrderApi, getIdByOrderApi} from '@/api/order'
+  import {editOrderApi} from '@/api/order'
   import {getCourierApi} from "@/api/courier";
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
 
   export default {
-    name: "AddOrder",
+    name: "AddOrderSpecial",
     data() {
-      let validateOrder = (rule, value, callback) => {
-        value = value.trim();
-        let param = `l_o_orderNumber=${value}&u_id=${this.userId}&role=${this.role}`;
-        if (value.length !== 13) {
-          callback(new Error('请输入长度为13的单号'));
-          return
-        }
-        getIdByOrderApi(param).then(result => {
-          let message = result.data.message;
-          if (message === 0) {
-            callback(new Error('此订单号不可使用,请更换一个订单号'))
-          } else {
-            this.orderId = message;
-            callback()
-          }
-        });
-      };
       return {
-        orderId: null,
         courierList: [],
         isSubmitLoading: false,
         length: 0,
         width: 0,
         height: 0,
         form: {
-          o_id: null,
+          l_o_orderNumber: '',
           l_id: null, // 创建人id
 
           c_o_startName: '', // 寄件人姓名
@@ -384,9 +366,8 @@
           l_log_username: '', // 下一网点编号
         },
         rules: {
-          o_id: [
-            {required: true, message: '请输入单号', trigger: 'blur'},
-            {validator: validateOrder, trigger: 'blur'}
+          l_o_orderNumber: [
+            {required: true, message: '请输入单号', trigger: 'blur'}
           ],
 
           c_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
@@ -555,9 +536,9 @@
           if (valid) {
             this.$msgBox('请确认提交').then(() => {
               let data = {...this.form};
-              data.o_id = this.orderId;
               data.l_id = this.userId;
-              data.i = 0;
+              data.i = 1;
+              data.l_o_orderNumber = data.l_o_orderNumber.trim();
               editOrderApi(data).then(() => {
                 this.cancel();
               });

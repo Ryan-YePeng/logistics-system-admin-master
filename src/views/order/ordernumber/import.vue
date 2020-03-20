@@ -138,6 +138,7 @@
               /* 分批请求 */
               let temp = (data.endNumber - data.firstNumber) / 500;
               let timer = Math.floor(temp);
+              if (timer === 0) timer = 1;
               let start = data.firstNumber;
               let end = data.endNumber;
               for (let i = 0; i <= timer; i++) {
