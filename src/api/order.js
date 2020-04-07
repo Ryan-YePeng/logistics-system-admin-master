@@ -52,3 +52,6 @@ const editMoreOrderUrl = 'hdd/moreWULIU';
 export function editMoreOrderApi(data) {
   return axiosK(editMoreOrderUrl, data)
 }
+
+// 切割单号
+export const cutOrder = new RegExp(/([J][D][0-9]{11})|([Y][T][0-9]{13})|([S][F][0-9]{13})/ig);

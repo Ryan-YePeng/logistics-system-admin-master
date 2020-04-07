@@ -3,7 +3,7 @@
     <el-dialog
             v-loading="isGetIdLoading"
             element-loading-text="查找订单中，请稍后..."
-            title="批量更新订单"
+            title="批量编辑订单"
             @close="cancel"
             :destroy-on-close="true"
             fullscreen
@@ -22,6 +22,25 @@
       </el-form>
       <!-- 状态 -->
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="重量:">
+              <el-input v-model="form.o_weight"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div style="margin-left: 140px">
+          <input type="number" min="0" v-model="length" style="width:100px">长(cm) *
+          <input type="number" min="0" v-model="width" style="width:100px">宽(cm) *
+          <input type="number" min="0" v-model="height" style="width:100px">高(cm) / 5000
+        </div>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="体积重量:">
+              <el-input v-model="form.o_volume"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="状态:" prop="l_log_state">
@@ -118,31 +137,15 @@
 </template>
 
 <script>
-  import {editMoreOrderApi, getIdByOrderHadEditedApi} from '@/api/order'
+  import {editMoreOrderApi, getIdByOrderHadEditedApi, cutOrder} from '@/api/order'
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
 
   export default {
     name: "EditOrderMore",
     data() {
-      // let validateOrderFirst = (rule, value, callback) => {
-      //   value = value.trim();
-      //   const reg = /^\d+$/;
-      //   let length = value.length;
-      //   if (value === '' || value === undefined || value == null) {
-      //     callback(new Error('请输入单号'))
-      //   } else {
-      //     if ((!reg.test(value)) && value !== '') {
-      //       callback(new Error('只能录入数字'))
-      //     } else if (length % 13 !== 0) {
-      //       callback(new Error('单号录入不完整'))
-      //     } else {
-      //       this.getId(value);
-      //       callback()
-      //     }
-      //   }
-      // };
       let validateOrderFirst = (rule, value, callback) => {
+        value = value.replace(cutOrder, item => item + '\n');
         value = value.trim();
         if (value === '' || value === undefined || value == null) {
           callback(new Error('请输入单号'))
@@ -159,6 +162,9 @@
       };
       return {
         dialogTableVisible: false,
+        length: 0,
+        width: 0,
+        height: 0,
         option: [
           {c_log_state: '揽收', l_log_state: 'ເກັບ ກຳ'},
           {c_log_state: '发出', l_log_state: 'ສົ່ງອອກ'},
@@ -199,6 +205,9 @@
           l_problem: '',  // 下一网点
           c_log_username: '', // 下一网点编号
           l_log_username: '', // 下一网点编号
+
+          o_weight: '', // 体积
+          o_volume: '' // 重量
         },
         rules: {
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'}
@@ -233,7 +242,26 @@
         }
       },
     },
+    watch: {
+      length: function () {
+        this.calculate()
+      },
+      width: function () {
+        this.calculate()
+      },
+      height: function () {
+        this.calculate()
+      }
+    },
     methods: {
+      // 计算体积重量
+      calculate() {
+        let length = this.length;
+        let width = this.width;
+        let height = this.height;
+        this.form.o_volume = length * width * height / 5000
+      },
+
       getId(value) {
         this.orderList = value;
         this.orderListLength = value.length;
@@ -366,6 +394,9 @@
       cancel() {
         this.dialogTableVisible = false;
         this.siteNameOptions = [];
+        this.length = 0;
+        this.width = 0;
+        this.height = 0;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].resetFields();
         Object.assign(this.$data.dynamicValidateForm, this.$options.data().dynamicValidateForm);

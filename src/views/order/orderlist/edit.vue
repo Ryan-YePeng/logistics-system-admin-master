@@ -8,7 +8,7 @@
             :visible.sync="dialogTableVisible">
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
 
-        <el-collapse v-if="authority === 'level' || form.l_id === userId">
+        <el-collapse v-model="activeNames" v-if="authority === 'level' || form.l_id === userId">
           <el-collapse-item title="订单详情" name="1">
             <el-row>
               <el-col :span="12">
@@ -52,16 +52,6 @@
                 <el-radio label="文件"></el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="重量:">
-                  <el-input v-model="form.o_weight"></el-input>
-                </el-form-item>
-                <el-form-item label="体积重量:">
-                  <el-input v-model="form.o_volume"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="内件品名:">
@@ -175,6 +165,25 @@
         </el-collapse>
 
         <el-form-item label="订单号:" style="margin-top: 50px">{{number}}</el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="重量:">
+              <el-input v-model="form.o_weight"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <div style="margin-left: 140px">
+          <input type="number" min="0" v-model="length" style="width:100px">长(cm) *
+          <input type="number" min="0" v-model="width" style="width:100px">宽(cm) *
+          <input type="number" min="0" v-model="height" style="width:100px">高(cm) / 5000
+        </div>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="体积重量:">
+              <el-input v-model="form.o_volume"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="状态:" prop="l_log_state">
           <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
             <el-option
@@ -276,6 +285,10 @@
     name: "EditOrder",
     data() {
       return {
+        activeNames: '0',
+        length: 0,
+        width: 0,
+        height: 0,
         dialogTableVisible: false,
         number: '',
         option: [
@@ -360,27 +373,27 @@
           l_log_username: '', // 下一网点编号
         },
         rules: {
-          c_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
-          c_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
-          c_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
-          c_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
-
-          l_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
-          l_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
-          l_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
-          l_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
-
-          c_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
-          c_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
-          c_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
-          c_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
-          c_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
-
-          l_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
-          l_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
-          l_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
-          l_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
-          l_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
+          // c_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
+          // c_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
+          // c_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
+          // c_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
+          //
+          // l_o_startName: {required: true, message: '请输入寄件人姓名', trigger: 'blur'},
+          // l_o_provenance: {required: true, message: '请输入始发地', trigger: 'blur'},
+          // l_o_startAddress: {required: true, message: '请输入寄件人地址', trigger: 'blur'},
+          // l_o_startPhone: {required: true, message: '请输入寄件人联系电话', trigger: 'blur'},
+          //
+          // c_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
+          // c_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+          // c_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
+          // c_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
+          // c_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
+          //
+          // l_o_sendersId: {required: true, message: '请输入寄件人证件号', trigger: 'blur'},
+          // l_o_endName: {required: true, message: '请输入收件人姓名', trigger: 'blur'},
+          // l_o_destination: {required: true, message: '请输入目的地', trigger: 'blur'},
+          // l_o_endAddress: {required: true, message: '请输入收件人地址', trigger: 'blur'},
+          // l_o_endPhone: {required: true, message: '请输收件人联系电话', trigger: 'blur'},
 
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'},
 
@@ -406,7 +419,26 @@
         return this.$store.getters.user.authorities[0]['authority'];
       },
     },
+    watch: {
+      length: function () {
+        this.calculate()
+      },
+      width: function () {
+        this.calculate()
+      },
+      height: function () {
+        this.calculate()
+      }
+    },
     methods: {
+      // 计算体积重量
+      calculate() {
+        let length = this.length;
+        let width = this.width;
+        let height = this.height;
+        this.form.o_volume = length * width * height / 5000
+      },
+
       /* 模糊搜索网点 */
       siteNameSelected() {
         let name = this.form.c_problem;
@@ -498,6 +530,7 @@
               });
             });
           } else {
+            this.$errorMsg('有必填项未填写，无法提交');
             return false;
           }
         });
@@ -505,6 +538,10 @@
       cancel() {
         this.dialogTableVisible = false;
         Object.assign(this.$data.form, this.$options.data().form);
+        this.length = 0;
+        this.width = 0;
+        this.height = 0;
+        this.activeNames = '0';
         this.$refs['Form'].resetFields()
       }
     }

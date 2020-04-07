@@ -563,6 +563,7 @@
               });
             })
           } else {
+            this.$errorMsg('有必填项未填写，无法提交');
             return false;
           }
         });

@@ -541,6 +541,7 @@
         }
         _this.form.c_log_branches = this.user.c__branchesName;
         _this.form.l_log_branches = this.user.l_branchesName;
+        _this.form.o_volume = '';
         _this.dialogTableVisible = true
       }
     }
