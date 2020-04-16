@@ -18,7 +18,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="名称(老挝)" prop="l_n_name">
+          <el-form-item label="标题(老挝)" prop="l_n_name">
             <el-input v-model="form.l_n_name"></el-input>
           </el-form-item>
           <el-form-item label="分类(老挝)" prop="l_nC_id">

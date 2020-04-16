@@ -99,6 +99,7 @@
       }
     },
     beforeDestroy() {
+      document.querySelector(".tinymce").style.visibility = "hidden";
       tinymce.remove()
     }
   }
