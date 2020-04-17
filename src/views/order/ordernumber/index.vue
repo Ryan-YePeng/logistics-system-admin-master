@@ -235,21 +235,29 @@
           let last = start;
           let list = [];
           let length = response.length;
-          response.forEach((current, index) => {
-            if (last + 1 === current) {
-              last++
-            } else {
-              list.push({start: start, end: last});
-              last = start = response[index];
-            }
-            if (length === index + 1) {
-              if (current === response[index - 1] + 1) {
-                list.push({start: start, end: last});
+          /* 数组变区间 */
+          if (length === 0) {
+            list.push({start: start, end: last});
+          } else if (length === 1 && (start + 1) === response[0]) {
+            list.push({start: start, end: response[0]});
+          } else {
+            response.forEach((current, index) => {
+              if (last + 1 === current) {
+                last++
               } else {
-                list.push({start: current, end: current});
+                list.push({start: start, end: last});
+                last = start = response[index];
               }
-            }
-          });
+              if (length === index + 1) {
+                if (current === response[index - 1] + 1) {
+                  list.push({start: start, end: last});
+                } else {
+                  list.push({start: current, end: current});
+                }
+              }
+            })
+          }
+          /* 数组变区间 */
           this.canGiveSection = list;
           this.isGiveLoading = false;
           this.isLoading = false;

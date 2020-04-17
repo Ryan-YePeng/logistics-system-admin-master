@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card">
+  <el-card class="box-card add-order-special">
     <div slot="header" class="clearfix">
       <span>新增订单</span>
     </div>
@@ -7,8 +7,8 @@
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="单号:" prop="l_o_orderNumber">
-              <el-input v-model="form.l_o_orderNumber"></el-input>
+            <el-form-item label="单号:" prop="string">
+              <el-input type="textarea" v-model="form.string"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -217,10 +217,10 @@
             <el-form-item label="快递员:">
               <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
-                        v-for="item in courierList"
-                        :key="item.l_co_id"
-                        :label="item.c_co_name"
-                        :value="item.c_co_name">
+                    v-for="item in courierList"
+                    :key="item.l_co_id"
+                    :label="item.c_co_name"
+                    :value="item.c_co_name">
                   <span style="float: left">{{ item.c_co_name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_co_name }}</span>
                 </el-option>
@@ -244,20 +244,20 @@
           <el-col :span="12">
             <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_problem"
-                      placeholder="请输入网点名称"
-                      clearable
-                      filterable
-                      remote
-                      reserve-keyword
-                      :remote-method="remoteMethod"
-                      :loading="searchLoading"
-                      @change="siteNameSelected">
+                  v-model="form.c_problem"
+                  placeholder="请输入网点名称"
+                  clearable
+                  filterable
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteMethod"
+                  :loading="searchLoading"
+                  @change="siteNameSelected">
                 <el-option
-                        v-for="item in siteNameOptions"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
+                    v-for="item in siteNameOptions"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
                   <span style="float: left">{{ item.c__branchesName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
@@ -283,6 +283,7 @@
   import {getCourierApi} from "@/api/courier";
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
+  import {load_sound} from "@/utils/sound_tips";
 
   export default {
     name: "AddOrderSpecial",
@@ -294,7 +295,7 @@
         width: 0,
         height: 0,
         form: {
-          l_o_orderNumber: '',
+          string: '',
           l_id: null, // 创建人id
 
           c_o_startName: '', // 寄件人姓名
@@ -366,7 +367,7 @@
           l_log_username: '', // 下一网点编号
         },
         rules: {
-          l_o_orderNumber: [
+          string: [
             {required: true, message: '请输入单号', trigger: 'blur'}
           ],
 
@@ -412,6 +413,11 @@
       },
       height: function () {
         this.calculate()
+      },
+      'form.string'(value) {
+        if (value[value.length - 1] === '\n') {
+          load_sound();
+        }
       }
     },
     computed: {
@@ -538,7 +544,14 @@
               let data = {...this.form};
               data.l_id = this.userId;
               data.i = 1;
-              data.l_o_orderNumber = data.l_o_orderNumber.trim();
+              let value = data.string.trim();
+              let list = [];
+              value = value.split('\n');
+              value.forEach(item => {
+                item = item.trim();
+                if (item !== '') list.push(item)
+              });
+              data.string = list.join(',');
               editOrderApi(data).then(() => {
                 this.cancel();
               });
@@ -554,6 +567,8 @@
         this.width = 0;
         this.height = 0;
         this.$refs['Form'].resetFields();
+        this.dynamicValidateForm.orders = '';
+        this.$refs['dynamicValidateForm'].resetFields();
         this.form.c_log_branches = this.user.c__branchesName;
         this.form.l_log_branches = this.user.l_branchesName;
         this.form.c_o_provenance = this.user.c_br_address;
@@ -563,6 +578,10 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .add-order-special {
+    .el-textarea__inner {
+      height: 150px;
+    }
+  }
 </style>

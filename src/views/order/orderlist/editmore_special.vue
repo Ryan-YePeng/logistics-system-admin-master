@@ -1,12 +1,12 @@
 <template>
   <div id="edit-order-more">
     <el-dialog
-            title="批量编辑订单"
-            @close="cancel"
-            :destroy-on-close="true"
-            fullscreen
-            :close-on-click-modal="false"
-            :visible.sync="dialogTableVisible">
+        title="批量编辑订单"
+        @close="cancel"
+        :destroy-on-close="true"
+        fullscreen
+        :close-on-click-modal="false"
+        :visible.sync="dialogTableVisible">
       <!-- 单号 -->
       <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" :rules="dynamicValidateRules" label-width="140px"
                size="small">
@@ -47,10 +47,10 @@
             <el-form-item label="状态:" prop="l_log_state">
               <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
                 <el-option
-                        v-for="item in option"
-                        :key="item.c_log_state"
-                        :label="item.c_log_state"
-                        :value="item.c_log_state">
+                    v-for="item in option"
+                    :key="item.c_log_state"
+                    :label="item.c_log_state"
+                    :value="item.c_log_state">
                   <span style="float: left">{{ item.c_log_state }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_log_state }}</span>
                 </el-option>
@@ -75,10 +75,10 @@
             <el-form-item label="快递员:">
               <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
-                        v-for="item in courierList"
-                        :key="item.l_co_id"
-                        :label="item.c_co_name"
-                        :value="item.c_co_name">
+                    v-for="item in courierList"
+                    :key="item.l_co_id"
+                    :label="item.c_co_name"
+                    :value="item.c_co_name">
                   <span style="float: left">{{ item.c_co_name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_co_name }}</span>
                 </el-option>
@@ -102,20 +102,20 @@
           <el-col :span="12">
             <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_problem"
-                      placeholder="请输入网点名称"
-                      clearable
-                      filterable
-                      remote
-                      reserve-keyword
-                      :remote-method="remoteMethod"
-                      :loading="searchLoading"
-                      @change="siteNameSelected">
+                  v-model="form.c_problem"
+                  placeholder="请输入网点名称"
+                  clearable
+                  filterable
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteMethod"
+                  :loading="searchLoading"
+                  @change="siteNameSelected">
                 <el-option
-                        v-for="item in siteNameOptions"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
+                    v-for="item in siteNameOptions"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
                   <span style="float: left">{{ item.c__branchesName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
@@ -141,6 +141,7 @@
   import {cutOrder, editMoreOrderApi} from '@/api/order'
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
+  import {load_sound} from "@/utils/sound_tips";
 
   export default {
     name: "EditOrderMoreSpecial",
@@ -250,6 +251,11 @@
       },
       height: function () {
         this.calculate()
+      },
+      'dynamicValidateForm.orders'(value) {
+        if (value[value.length - 1] === '\n') {
+          load_sound();
+        }
       }
     },
     methods: {

@@ -1,11 +1,11 @@
 <template>
   <div id="edit-order">
     <el-dialog
-            title="更新订单"
-            @close="cancel"
-            fullscreen
-            :close-on-click-modal="false"
-            :visible.sync="dialogTableVisible">
+        title="更新订单"
+        @close="cancel"
+        fullscreen
+        :close-on-click-modal="false"
+        :visible.sync="dialogTableVisible">
       <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
 
         <el-collapse v-model="activeNames" v-if="authority === 'level' || form.l_id === userId">
@@ -187,10 +187,10 @@
         <el-form-item label="状态:" prop="l_log_state">
           <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
             <el-option
-                    v-for="item in option"
-                    :key="item.c_log_state"
-                    :label="item.c_log_state"
-                    :value="item.c_log_state">
+                v-for="item in option"
+                :key="item.c_log_state"
+                :label="item.c_log_state"
+                :value="item.c_log_state">
               <span style="float: left">{{ item.c_log_state }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_log_state }}</span>
             </el-option>
@@ -214,10 +214,10 @@
             <el-form-item label="快递员:">
               <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
-                        v-for="item in courierList"
-                        :key="item.l_co_id"
-                        :label="item.c_co_name"
-                        :value="item.c_co_name">
+                    v-for="item in courierList"
+                    :key="item.l_co_id"
+                    :label="item.c_co_name"
+                    :value="item.c_co_name">
                   <span style="float: left">{{ item.c_co_name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_co_name }}</span>
                 </el-option>
@@ -241,20 +241,20 @@
           <el-col :span="12">
             <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_problem"
-                      placeholder="请输入网点名称"
-                      clearable
-                      filterable
-                      remote
-                      reserve-keyword
-                      :remote-method="remoteMethod"
-                      :loading="searchLoading"
-                      @change="siteNameSelected">
+                  v-model="form.c_problem"
+                  placeholder="请输入网点名称"
+                  clearable
+                  filterable
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteMethod"
+                  :loading="searchLoading"
+                  @change="siteNameSelected">
                 <el-option
-                        v-for="item in siteNameOptions"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
+                    v-for="item in siteNameOptions"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
                   <span style="float: left">{{ item.c__branchesName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
@@ -524,6 +524,7 @@
             this.$msgBox('确认提交？').then(() => {
               let data = {...this.form};
               data.i = 0;
+              data.string = this.number;
               editOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()

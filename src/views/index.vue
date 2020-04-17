@@ -5,7 +5,7 @@
       <Drawer :display.sync="isMenuCollapse" :inner="true" :width="'209px'">
         <LeftMenu :isCollapse="false" :isSmall="false"></LeftMenu>
       </Drawer>
-      <el-container>
+      <el-container style="flex: 1">
         <el-header style="height: 50px;">
           <div class="navbar">
             <div class="menu-button">

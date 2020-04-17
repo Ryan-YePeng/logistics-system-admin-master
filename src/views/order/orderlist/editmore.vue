@@ -143,6 +143,7 @@
   import {editMoreOrderApi, getIdByOrderHadEditedApi, cutOrder} from '@/api/order'
   import {isEmpty} from "@/utils/common";
   import {searchSiteApi} from "@/api/site";
+  import {load_sound} from "@/utils/sound_tips";
 
   export default {
     name: "EditOrderMore",
@@ -256,6 +257,11 @@
       },
       height: function () {
         this.calculate()
+      },
+      'dynamicValidateForm.orders'(value) {
+        if (value[value.length - 1] === '\n') {
+          load_sound();
+        }
       }
     },
     methods: {
