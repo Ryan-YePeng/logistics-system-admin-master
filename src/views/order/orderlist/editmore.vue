@@ -1,14 +1,14 @@
 <template>
   <div id="edit-order-more">
     <el-dialog
-            v-loading="isGetIdLoading"
-            element-loading-text="查找订单中，请稍后..."
-            title="批量编辑订单"
-            @close="cancel"
-            :destroy-on-close="true"
-            fullscreen
-            :close-on-click-modal="false"
-            :visible.sync="dialogTableVisible">
+        v-loading="isGetIdLoading"
+        element-loading-text="查找订单中，请稍后..."
+        title="批量编辑订单"
+        @close="cancel"
+        :destroy-on-close="true"
+        fullscreen
+        :close-on-click-modal="false"
+        :visible.sync="dialogTableVisible">
       <!-- 单号 -->
       <el-form :model="dynamicValidateForm" ref="dynamicValidateForm" :rules="dynamicValidateRules" label-width="140px"
                size="small">
@@ -20,12 +20,12 @@
           </el-col>
         </el-row>
       </el-form>
-      <!-- 状态 -->
-      <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
+      <!-- 其他信息 -->
+      <el-form :model="editForm" ref="EditForm" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="重量:">
-              <el-input v-model="form.o_weight"></el-input>
+              <el-input v-model="editForm.o_weight"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -37,22 +37,65 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="体积重量:">
-              <el-input v-model="form.o_volume"></el-input>
+              <el-input v-model="editForm.o_volume"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="运费:">
-          <el-input v-model="form.o_freight"></el-input>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="运费:">
+              <el-input v-model="editForm.o_freight"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="内件品名:">
+              <el-input v-model="editForm.c_o_itemName" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <el-input v-model="editForm.l_o_itemName" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="收件人姓名:" prop="c_o_endName">
+              <el-input v-model="editForm.c_o_endName" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_o_endName">
+              <el-input v-model="editForm.l_o_endName" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
+              <el-input v-model="editForm.c_o_endAddress" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_o_endAddress">
+              <el-input v-model="editForm.l_o_endAddress" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <!-- 状态 -->
+      <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="状态:" prop="l_log_state">
               <el-select v-model="form.c_log_state" placeholder="请选择状态" @change="selectState">
                 <el-option
-                        v-for="item in option"
-                        :key="item.c_log_state"
-                        :label="item.c_log_state"
-                        :value="item.c_log_state">
+                    v-for="item in option"
+                    :key="item.c_log_state"
+                    :label="item.c_log_state"
+                    :value="item.c_log_state">
                   <span style="float: left">{{ item.c_log_state }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_log_state }}</span>
                 </el-option>
@@ -77,10 +120,10 @@
             <el-form-item label="快递员:">
               <el-select v-model="form.c_log_member" placeholder="请选择快递员" clearable @change="selectCourier">
                 <el-option
-                        v-for="item in courierList"
-                        :key="item.l_co_id"
-                        :label="item.c_co_name"
-                        :value="item.c_co_name">
+                    v-for="item in courierList"
+                    :key="item.l_co_id"
+                    :label="item.c_co_name"
+                    :value="item.c_co_name">
                   <span style="float: left">{{ item.c_co_name }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_co_name }}</span>
                 </el-option>
@@ -104,20 +147,20 @@
           <el-col :span="12">
             <el-form-item label="发往网点:" prop="c_problem">
               <el-select
-                      v-model="form.c_problem"
-                      placeholder="请输入网点名称"
-                      clearable
-                      filterable
-                      remote
-                      reserve-keyword
-                      :remote-method="remoteMethod"
-                      :loading="searchLoading"
-                      @change="siteNameSelected">
+                  v-model="form.c_problem"
+                  placeholder="请输入网点名称"
+                  clearable
+                  filterable
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteMethod"
+                  :loading="searchLoading"
+                  @change="siteNameSelected">
                 <el-option
-                        v-for="item in siteNameOptions"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
+                    v-for="item in siteNameOptions"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
                   <span style="float: left">{{ item.c__branchesName }}</span>
                   <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
                 </el-option>
@@ -209,14 +252,22 @@
           l_problem: '',  // 下一网点
           c_log_username: '', // 下一网点编号
           l_log_username: '', // 下一网点编号
-
-          o_weight: '', // 体积
-          o_volume: '', // 重量
-
-          o_freight: '' // 运费
         },
         rules: {
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'}
+        },
+        editForm: {
+          o_weight: '', // 体积
+          o_volume: '', // 重量
+
+          o_freight: '', // 运费
+
+          c_o_endName: '', // 收件人姓名
+          l_o_endName: '',
+          c_o_endAddress: '', // 收件人地址
+          l_o_endAddress: '',
+          c_o_itemName: '', // 内品名
+          l_o_itemName: ''
         },
 
         /* 模糊搜索 */
@@ -270,7 +321,7 @@
         let length = this.length;
         let width = this.width;
         let height = this.height;
-        this.form.o_volume = length * width * height / 5000
+        this.editForm.o_volume = length * width * height / 5000
       },
 
       getId(value) {
@@ -311,7 +362,25 @@
               let data = {...this.form};
               data.l_id = this.userId;
               data.i = 0;
+              /* 去重 */
+              for (let i = 0; i < this.ids.length; i++) {
+                for (let j = i + 1; j < this.ids.length; j++) {
+                  if (this.ids[i] === this.ids[j]) {
+                    this.ids.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+              /**/
               data.string = this.ids.join(',');
+              /* 去除空键 */
+              let editData = {...this.editForm};
+              editData.string = data.string;
+              for (let key in editData) {
+                if (editData[key] === "") delete editData[key]
+              }
+              /**/
+              data = {...data, ...editData};
               editMoreOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()
@@ -410,6 +479,8 @@
         this.height = 0;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].resetFields();
+        Object.assign(this.$data.editForm, this.$options.data().editForm);
+        this.$refs['EditForm'].resetFields();
         Object.assign(this.$data.dynamicValidateForm, this.$options.data().dynamicValidateForm);
         this.$refs['dynamicValidateForm'].resetFields();
       }

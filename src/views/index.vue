@@ -45,8 +45,8 @@
         <el-main class="top" id="top" style="overflow-x: hidden">
           <transition name="xz-animation">
             <keep-alive
-                    v-if="isRouterAlive"
-                    include="Order,Courier,Site,Help,Classification">
+                v-if="isRouterAlive"
+                include="Courier,Site,Help,Classification">
               <router-view></router-view>
             </keep-alive>
           </transition>
@@ -104,8 +104,8 @@
       // 获取滚动高度
       getScrollTop(obj) {
         obj.scrollTop >= 100
-            ? this.isShowBackTop = true
-            : this.isShowBackTop = false;
+          ? this.isShowBackTop = true
+          : this.isShowBackTop = false;
         this.$store.dispatch('setScrollTop', obj.scrollTop)
       },
       // 事件监听

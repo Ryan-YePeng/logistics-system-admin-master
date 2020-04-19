@@ -53,5 +53,13 @@ export function editMoreOrderApi(data) {
   return axiosK(editMoreOrderUrl, data)
 }
 
+//  批量修改订单
+const updateMoreOrderUrl = 'hdd/updateMoreL_order';
+
+export function updateMoreOrderApi(data) {
+  return axiosP(updateMoreOrderUrl, data)
+}
+
+
 // 切割单号
 export const cutOrder = new RegExp(/([J][D][0-9]{11})|([Y][T][0-9]{13})|([S][F][0-9]{13})/ig);

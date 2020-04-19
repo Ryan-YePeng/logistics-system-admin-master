@@ -18,12 +18,12 @@
           </el-col>
         </el-row>
       </el-form>
-      <!-- 状态 -->
-      <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
+      <!-- 其他信息 -->
+      <el-form :model="editForm" ref="EditForm" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="重量:">
-              <el-input v-model="form.o_weight"></el-input>
+              <el-input v-model="editForm.o_weight"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -35,13 +35,56 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="体积重量:">
-              <el-input v-model="form.o_volume"></el-input>
+              <el-input v-model="editForm.o_volume"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="运费:">
-          <el-input v-model="form.o_freight"></el-input>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="运费:">
+              <el-input v-model="editForm.o_freight"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="内件品名:">
+              <el-input v-model="editForm.c_o_itemName" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item>
+              <el-input v-model="editForm.l_o_itemName" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="收件人姓名:" prop="c_o_endName">
+              <el-input v-model="editForm.c_o_endName" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_o_endName">
+              <el-input v-model="editForm.l_o_endName" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
+              <el-input v-model="editForm.c_o_endAddress" placeholder="中文"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="l_o_endAddress">
+              <el-input v-model="editForm.l_o_endAddress" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <!-- 状态 -->
+      <el-form :model="form" :rules="rules" ref="Form" label-width="140px" size="small">
         <el-row>
           <el-col :span="12">
             <el-form-item label="状态:" prop="l_log_state">
@@ -203,14 +246,22 @@
           l_problem: '',  // 下一网点
           c_log_username: '', // 下一网点编号
           l_log_username: '', // 下一网点编号
-
-          o_weight: '', // 体积
-          o_volume: '', // 重量
-
-          o_freight: '' // 运费
         },
         rules: {
           l_log_state: {required: true, message: '请选择状态', trigger: 'change'}
+        },
+        editForm: {
+          o_weight: '', // 体积
+          o_volume: '', // 重量
+
+          o_freight: '', // 运费
+
+          c_o_endName: '', // 收件人姓名
+          l_o_endName: '',
+          c_o_endAddress: '', // 收件人地址
+          l_o_endAddress: '',
+          c_o_itemName: '', // 内品名
+          l_o_itemName: ''
         },
 
         /* 模糊搜索 */
@@ -264,7 +315,7 @@
         let length = this.length;
         let width = this.width;
         let height = this.height;
-        this.form.o_volume = length * width * height / 5000
+        this.editForm.o_volume = length * width * height / 5000
       },
 
       getId(value) {
@@ -288,9 +339,27 @@
           if (valid) {
             this.$msgBox('确认提交？').then(() => {
               let data = {...this.form};
-              data.string = this.orderList.join(',');
               data.l_id = this.userId;
               data.i = 1;
+              /* 去重 */
+              for (let i = 0; i < this.orderList.length; i++) {
+                for (let j = i + 1; j < this.orderList.length; j++) {
+                  if (this.orderList[i] === this.orderList[j]) {
+                    this.orderList.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+              /**/
+              data.string = this.orderList.join(',');
+              /* 去除空键 */
+              let editData = {...this.editForm};
+              editData.string = data.string;
+              for (let key in editData) {
+                if (editData[key] === "") delete editData[key]
+              }
+              /**/
+              data = {...data, ...editData};
               editMoreOrderApi(data).then(() => {
                 this.$emit('update');
                 this.cancel()
@@ -389,6 +458,8 @@
         this.height = 0;
         Object.assign(this.$data.form, this.$options.data().form);
         this.$refs['Form'].resetFields();
+        Object.assign(this.$data.editForm, this.$options.data().editForm);
+        this.$refs['EditForm'].resetFields();
         Object.assign(this.$data.dynamicValidateForm, this.$options.data().dynamicValidateForm);
         this.$refs['dynamicValidateForm'].resetFields();
       }

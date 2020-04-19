@@ -613,6 +613,18 @@
               data.l_id = this.userId;
               data.i = 0;
               // delete data.l_o_orderNumber;
+
+              /* 去重 */
+              for (let i = 0; i < this.ids.length; i++) {
+                for (let j = i + 1; j < this.ids.length; j++) {
+                  if (this.ids[i] === this.ids[j]) {
+                    this.ids.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+              /**/
+
               data.string = this.ids.join(',');
               if (this.ids.length === 0) {
                 this.$errorMsg('无法提交，请输入有效单号');
