@@ -14,24 +14,31 @@
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
-        <el-input placeholder="联系电话"
+        <el-input placeholder="寄件人联系电话"
                   v-model="phoneText"
-                  style="width: 130px"
+                  style="width: 140px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
-        <el-input placeholder="录入时间"
-                  v-model="timeText"
-                  style="width: 180px"
+        <el-input placeholder="收件人联系电话"
+                  v-model="phoneSearch"
+                  style="width: 140px"
                   clearable
                   @keyup.enter.native="searchOrder">
         </el-input>
+        <el-date-picker
+            type="date"
+            placeholder="录入时间"
+            v-model="timeText"
+            style="width: 180px"
+            clearable
+            @change="searchOrder"/>
         <el-select
-                v-model="statusText"
-                style="width:120px"
-                placeholder="状态"
-                @change="searchOrder"
-                clearable>
+            v-model="statusText"
+            style="width:120px"
+            placeholder="状态"
+            @change="searchOrder"
+            clearable>
           <el-option label="揽收" value="揽收"></el-option>
           <el-option label="发出" value="发出"></el-option>
           <el-option label="到达" value="到达"></el-option>
@@ -47,10 +54,10 @@
       <el-button type="primary" @click="editMore">批量编辑</el-button>
       <div>
         <el-table
-                v-loading="isTableLoading"
-                :highlight-current-row="true"
-                @selection-change="getSelected"
-                :data="formData">
+            v-loading="isTableLoading"
+            :highlight-current-row="true"
+            @selection-change="getSelected"
+            :data="formData">
           <el-table-column v-if="isLevel" type="selection" width="45"></el-table-column>
 
           <el-table-column type="expand">
@@ -339,7 +346,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="l_o_orderNumber" label="订单号" width="120"></el-table-column>
+          <el-table-column prop="l_o_orderNumber" label="订单号" width="145"></el-table-column>
           <el-table-column prop="c_o_startName" label="寄件人姓名"></el-table-column>
           <el-table-column prop="c_o_startPhone" label="寄件人联系电话"></el-table-column>
           <el-table-column prop="c_o_endName" label="收件人姓名"></el-table-column>
@@ -350,13 +357,13 @@
               <span>{{scope.row.l_logisticsupdate[scope.row.l_logisticsupdate.length-1].c_log_state}}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center" width="120">
+          <el-table-column fixed="right" label="操作" align="center" width="70">
             <template slot-scope="scope">
-              <el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>
+              <!--<el-button type="primary" class="el-icon-edit" @click="edit(scope.row)" size="mini"></el-button>-->
               <el-popover
-                      :ref="scope.row.o_id"
-                      placement="top"
-                      width="180">
+                  :ref="scope.row.o_id"
+                  placement="top"
+                  width="180">
                 <p>确定删除本条数据吗？</p>
                 <div style="text-align: right; margin: 0">
                   <el-button size="mini" type="text" @click="$refs[scope.row.o_id].doClose()">取消</el-button>
@@ -389,7 +396,7 @@
   import ExportOrder from './exportorder'
   import pagination from '@/components/pagination'
   import EditMoreSpecial from './editmore_special'
-  import {objectEvaluate} from "@/utils/common";
+  import {formatDate, objectEvaluate} from "@/utils/common";
 
   export default {
     name: 'Order',
@@ -405,6 +412,7 @@
         orderText: '',
         nameText: '',
         phoneText: '',
+        phoneSearch: '',
         timeText: '',
         statusText: '',
         /*搜索*/
@@ -460,7 +468,9 @@
       searchOrder() {
         this.isTableLoading = true;
         let pagination = this.$refs.pagination.pagination;
-        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&s4=${this.timeText}&s5=${this.statusText}`;
+        let timeText = '';
+        if (this.timeText) timeText = formatDate(this.timeText);
+        let param = `pageNumber=${pagination.current}&pageCount=${pagination.size}&s1=${this.orderText}&s2=${this.nameText}&s3=${this.phoneText}&phone=${this.phoneSearch}&s4=${timeText}&s5=${this.statusText}`;
         searchOrderApi(param).then(result => {
           this.isTableLoading = false;
           this.formData = result.data.message;
@@ -500,15 +510,15 @@
       deleteOrder(id) {
         this.isDeleteLoading = true;
         deleteOrderApi([id])
-            .then(() => {
-              this.isDeleteLoading = false;
-              this.$refs[id].doClose();
-              this.searchOrder()
-            })
-            .catch(() => {
-              this.isDeleteLoading = false;
-              this.$refs[id].doClose()
-            });
+          .then(() => {
+            this.isDeleteLoading = false;
+            this.$refs[id].doClose();
+            this.searchOrder()
+          })
+          .catch(() => {
+            this.isDeleteLoading = false;
+            this.$refs[id].doClose()
+          });
       },
       getSelected(array) {
         this.deleteList = array.map(item => {
@@ -528,6 +538,7 @@
         this.orderText = '';
         this.nameText = '';
         this.phoneText = '';
+        this.phoneSearch = '';
         this.timeText = '';
         this.statusText = '';
         this.searchOrder();

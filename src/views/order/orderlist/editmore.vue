@@ -74,13 +74,39 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
-              <el-input v-model="editForm.c_o_endAddress" placeholder="中文"></el-input>
+            <el-form-item label="收件人联系电话:" prop="c_o_endPhone">
+              <el-input v-model="form.c_o_endPhone" placeholder="中文"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item prop="l_o_endAddress">
-              <el-input v-model="editForm.l_o_endAddress" placeholder="老挝语"></el-input>
+            <el-form-item prop="l_o_endPhone">
+              <el-input v-model="form.l_o_endPhone" placeholder="老挝语"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="收件人详细地址:" prop="c_o_endAddress">
+              <el-select
+                  style="width: 100%;"
+                  v-model="editForm.c_o_endAddress"
+                  placeholder="请输入收件人详细地址"
+                  clearable
+                  filterable
+                  remote
+                  reserve-keyword
+                  :remote-method="remoteMethodElse"
+                  :loading="searchLoadingElse"
+                  @change="siteNameSelectedElse">
+                <el-option
+                    v-for="item in siteNameOptionsElse"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.value">
+                  <span style="float: left">{{ item.c__branchesName }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.l_branchesName }}</span>
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -192,7 +218,7 @@
     name: "EditOrderMore",
     data() {
       let validateOrderFirst = (rule, value, callback) => {
-        value = value.replace(cutOrder, item => item + '\n');
+        // value = value.replace(cutOrder, item => item + '\n');
         value = value.trim();
         if (value === '' || value === undefined || value == null) {
           callback(new Error('请输入单号'))
@@ -267,12 +293,19 @@
           c_o_endAddress: '', // 收件人地址
           l_o_endAddress: '',
           c_o_itemName: '', // 内品名
-          l_o_itemName: ''
+          l_o_itemName: '',
+          c_o_endPhone: '', // 收件人联系电话
+          l_o_endPhone: ''
         },
 
         /* 模糊搜索 */
         searchLoading: false,
         siteNameOptions: [],
+        /* 模糊搜索 */
+
+        /* 模糊搜索 */
+        searchLoadingElse: false,
+        siteNameOptionsElse: [],
         /* 模糊搜索 */
       }
     },
@@ -391,6 +424,51 @@
           }
         });
       },
+
+      /* 模糊搜索网点 */
+      siteNameSelectedElse() {
+        let name = this.editForm.c_o_endAddress;
+        setTimeout(() => {
+          if (isEmpty(this.editForm.c_o_endAddress)) {
+            this.editForm.l_o_endAddress = '';
+            return
+          }
+          this.siteNameOptionsElse.some(item => {
+            if (item.c_br_address === name) {
+              this.editForm.l_o_endAddress = item.l_br_address;
+              return true
+            }
+          });
+        }, 100)
+      },
+      remoteMethodElse(query) {
+        if (query !== '') {
+          this.searchLoadingElse = true;
+          searchSiteApi(query).then(result => {
+            this.searchLoadingElse = false;
+            let siteNameOptionsData = [];
+            let response = result.data.message;
+            for (let i = 0; i < response.length; i++) {
+              siteNameOptionsData.push({
+                value: response[i].c_br_address,
+                label: response[i].c_br_address,
+                c__branchesName: response[i].c__branchesName,
+                l_branchesName: response[i].l_branchesName,
+                c_br_address: response[i].c_br_address,
+                l_br_address: response[i].l_br_address,
+                username: response[i].username,
+                key: response[i].u_id
+              })
+            }
+            this.siteNameOptionsElse = siteNameOptionsData;
+          }).catch(() => {
+            this.searchLoadingElse = false;
+          })
+        } else {
+          this.siteNameOptionsElse = [];
+        }
+      },
+      /* 模糊搜索网点 */
 
       /* 模糊搜索网点 */
       siteNameSelected() {
